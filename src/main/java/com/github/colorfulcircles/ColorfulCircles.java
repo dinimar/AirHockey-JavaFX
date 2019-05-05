@@ -30,7 +30,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package colorfulcircles;
+package com.github.colorfulcircles;
 
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
@@ -53,7 +53,6 @@ import javafx.util.Duration;
 import static java.lang.Math.random;
 
 public class ColorfulCircles extends Application {
-
     public static void main(String[] args) {
         launch(args);
     }
