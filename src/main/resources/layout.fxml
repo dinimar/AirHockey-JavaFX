@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.BorderPane?>
+<BorderPane fx:controller="com.github.controllers.GameController"
+            xmlns:fx="http://javafx.com/fxml">
+
+</BorderPane>
