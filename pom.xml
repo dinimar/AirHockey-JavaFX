@@ -5,8 +5,8 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.github</groupId>
-    <artifactId>agar-io</artifactId>
-    <version>0.1.1</version>
+    <artifactId>airhockey</artifactId>
+    <version>0.1.2</version>
 
     <name>air-hockey</name>
     <!-- FIXME change it to the project's website -->
