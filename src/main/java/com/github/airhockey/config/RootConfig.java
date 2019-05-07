@@ -1,6 +1,6 @@
 package com.github.airhockey.config;
 
-import com.github.airhockey.server.GameServer;
+import com.github.airhockey.websocket.server.GameServer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
