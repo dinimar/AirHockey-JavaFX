@@ -16,7 +16,7 @@ public class GameController extends Application {
     public void start(Stage stage) {
         try {
             Parent root = FXMLLoader.load(getClass().getResource("../../../layout.fxml"));
-            Scene scene = new Scene(root, 300, 275);
+            Scene scene = new Scene(root, 400, 600);
 
             stage.setTitle("Air hockey");
             stage.setScene(scene);

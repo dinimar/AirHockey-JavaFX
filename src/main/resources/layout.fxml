@@ -4,17 +4,31 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.*?>
-<?import javafx.scene.text.Text?>
-<GridPane fx:controller="com.github.controllers.GameController"
-          xmlns:fx="http://javafx.com/fxml" alignment="center" hgap="10" vgap="10">
-    <Text text="Air Hockey"
-          GridPane.columnIndex="0" GridPane.columnSpan="2" GridPane.rowIndex="0"
-          GridPane.halignment="CENTER"/>
+<?import java.net.URL?>
+<?import javafx.scene.effect.Glow?>
+
+<GridPane xmlns:fx="http://javafx.com/fxml"
+          fx:controller="com.github.controllers.GameController" alignment="center" hgap="10" vgap="10"
+          styleClass="root">
+    <Label text="Air Hockey"
+           GridPane.columnIndex="0" GridPane.columnSpan="2" GridPane.rowIndex="0"
+           GridPane.halignment="CENTER"
+           styleClass="header">
+        <effect>
+            <Glow level="1"/>
+        </effect>
+    </Label>
     <Label text="Name:"
-           GridPane.columnIndex="0" GridPane.rowIndex="1"/>
+           GridPane.columnIndex="0" GridPane.rowIndex="1"
+           styleClass="l1"/>
     <TextField
             GridPane.columnIndex="1" GridPane.rowIndex="1"/>
     <Button text="Start game"
             GridPane.columnIndex="0" GridPane.columnSpan="2" GridPane.rowIndex="2"
             GridPane.halignment="CENTER"></Button>
+
+    <!--CSS-->
+    <stylesheets>
+        <URL value="@/assets/css/main.css"></URL>
+    </stylesheets>
 </GridPane>
