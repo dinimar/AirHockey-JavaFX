@@ -1,9 +1,14 @@
 package com.github.airhockey.websocket.client;
 
 
+import com.github.airhockey.config.RootConfig;
 import com.github.airhockey.entities.Player;
-import com.google.gson.Gson;
+import com.github.airhockey.websocket.messages.Message;
+import com.github.airhockey.websocket.messages.MessageType;
+import com.github.airhockey.websocket.utils.JSONUtils;
 import javafx.scene.control.Alert;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import javax.websocket.*;
 import java.io.IOException;
@@ -15,7 +20,6 @@ public class GameClientEndpoint {
     private Session userSession;
     private WebSocketContainer container;
 
-
     public GameClientEndpoint() {
         try {
             this.container = ContainerProvider.getWebSocketContainer();
@@ -26,8 +30,14 @@ public class GameClientEndpoint {
     public void connectToServer(String endpointURI, Player player) {
         try {
             container.connectToServer(this, new URI(endpointURI));
-            Gson gson = new Gson();
-            this.sendMessage(gson.toJson(player));
+
+            // Create new message
+            Message msg = new Message();
+            msg.setMsgType(MessageType.PLAYER_INFO);
+//            msg.setSession(userSession);
+            msg.addProperty(player);
+
+            this.sendMessage(msg);
         } catch (URISyntaxException ex) {
             Alert warn = new Alert(Alert.AlertType.WARNING, "Wrong server address");
             warn.showAndWait();
@@ -53,7 +63,11 @@ public class GameClientEndpoint {
     public void onMessage(String message) {
     }
 
-    public void sendMessage(String message) {
-        this.userSession.getAsyncRemote().sendText(message);
+    public void sendMessage(Message message) {
+        ApplicationContext context = new AnnotationConfigApplicationContext(RootConfig.class);
+        JSONUtils jsonUtils = context.getBean(JSONUtils.class);
+
+        String resMsg = jsonUtils.toJson(message);
+        this.userSession.getAsyncRemote().sendText(resMsg);
     }
 }
