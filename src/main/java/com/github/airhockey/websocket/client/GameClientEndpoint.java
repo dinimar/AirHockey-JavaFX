@@ -1,14 +1,11 @@
 package com.github.airhockey.websocket.client;
 
-import com.github.airhockey.websocket.utils.MessageHandler;
-
 import javax.websocket.*;
 import java.net.URI;
 
 @ClientEndpoint
 public class GameClientEndpoint {
     private Session userSession;
-    private MessageHandler messageHandler = new MessageHandler();
 
     public GameClientEndpoint(URI endpointURI) {
         try {
@@ -30,7 +27,8 @@ public class GameClientEndpoint {
     }
 
     @OnMessage
-    public void onMessage(String message) { }
+    public void onMessage(String message) {
+    }
 
     public void sendMessage(String message) {
         this.userSession.getAsyncRemote().sendText(message);
