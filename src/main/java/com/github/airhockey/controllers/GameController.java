@@ -1,24 +1,33 @@
 package com.github.airhockey.controllers;
 
 import com.github.airhockey.config.RootConfig;
+import com.github.airhockey.entities.Player;
 import com.github.airhockey.websocket.client.GameClientEndpoint;
 import com.github.airhockey.websocket.server.GameServer;
 import javafx.application.Application;
+import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
+import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import javax.websocket.DeploymentException;
-import java.net.URI;
-import java.net.URISyntaxException;
+import java.net.URL;
 
 public class GameController extends Application {
+    private static ApplicationContext context = new AnnotationConfigApplicationContext(RootConfig.class);
+    private static GameClientEndpoint client = context.getBean(GameClientEndpoint.class);
+    @FXML
+    private Button startButton;
+    @FXML
+    private TextField nicknameField;
     public static void main(String[] args) {
-        ApplicationContext context = new AnnotationConfigApplicationContext(RootConfig.class);
         GameServer gameServer = context.getBean(GameServer.class);
 
         try {
@@ -26,24 +35,26 @@ public class GameController extends Application {
             gameServer.initServer();
             gameServer.launchServer();
 
-            // Client init
-            GameClientEndpoint clientEndpoint = null;
-            try {
-                clientEndpoint = new GameClientEndpoint(new URI("ws://127.0.0.1:8080/air-hockey"));
-            } catch (URISyntaxException ex) {
-            }
             // Launch game window
             launch(args);
         } catch (DeploymentException ex) {
-            Alert deployExAl = new Alert(Alert.AlertType.ERROR);
+            Alert deployExAl = new Alert(Alert.AlertType.ERROR, "Some bugs during deployment");
             deployExAl.showAndWait();
         }
+    }
+
+    @FXML
+    protected void handleStartButtonAction(ActionEvent event) {
+        // Connect client to server
+        Player player = new Player(nicknameField.getCharacters().toString());
+        client.connectToServer("ws://127.0.0.1:8080/air-hockey", player);
     }
 
     @Override
     public void start(Stage stage) {
         try {
-            Parent root = FXMLLoader.load(getClass().getResource("../../../../layout.fxml"));
+            URL url = getClass().getResource("../../../../layout.fxml");
+            Parent root = FXMLLoader.load(url);
             Scene scene = new Scene(root, 400, 600);
 
             stage.setTitle("Air hockey");
@@ -54,5 +65,4 @@ public class GameController extends Application {
             alert.showAndWait();
         }
     }
-
 }

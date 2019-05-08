@@ -1,20 +1,43 @@
 package com.github.airhockey.websocket.client;
 
+
+import com.github.airhockey.entities.Player;
+import com.google.gson.Gson;
+import javafx.scene.control.Alert;
+
 import javax.websocket.*;
+import java.io.IOException;
 import java.net.URI;
+import java.net.URISyntaxException;
 
 @ClientEndpoint
 public class GameClientEndpoint {
     private Session userSession;
+    private WebSocketContainer container;
 
-    public GameClientEndpoint(URI endpointURI) {
+
+    public GameClientEndpoint() {
         try {
-            WebSocketContainer container = ContainerProvider.getWebSocketContainer();
-            container.connectToServer(this, endpointURI);
+            this.container = ContainerProvider.getWebSocketContainer();
         } catch (Exception e) {
-            throw new RuntimeException(e);
         }
     }
+
+    public void connectToServer(String endpointURI, Player player) {
+        try {
+            container.connectToServer(this, new URI(endpointURI));
+            Gson gson = new Gson();
+            this.sendMessage(gson.toJson(player));
+        } catch (URISyntaxException ex) {
+            Alert warn = new Alert(Alert.AlertType.WARNING, "Wrong server address");
+            warn.showAndWait();
+        } catch (DeploymentException ex) {
+            Alert warn = new Alert(Alert.AlertType.WARNING, "Cannot connect to server");
+            warn.showAndWait();
+        } catch (IOException ex) {
+        }
+    }
+
 
     @OnOpen
     public void onOpen(Session userSession) {

@@ -35,8 +35,7 @@ public class GameServer {
 
     @OnMessage
     public void onMessage(String message, Session session) {
-
-        System.out.println("Message Received: " + message);
+        System.out.println("Message Received:\n"+message);
     }
 
     public List<Player> getPlayerList() {
