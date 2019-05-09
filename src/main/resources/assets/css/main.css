@@ -7,6 +7,11 @@
     -fx-text-fill: white;
 }
 
+.header-fx {
+    -fx-font-size: 60px;
+    -fx-text-fill: #3aff30;
+}
+
 .l1 {
     -fx-font-size: 20px;
     -fx-text-fill: white;
