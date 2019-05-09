@@ -7,9 +7,6 @@ import com.github.airhockey.websocket.server.GameServer;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
@@ -18,15 +15,16 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import javax.websocket.DeploymentException;
-import java.net.URL;
 
 public class GameController extends Application {
     private static ApplicationContext context = new AnnotationConfigApplicationContext(RootConfig.class);
     private static GameClientEndpoint client = context.getBean(GameClientEndpoint.class);
+    private static ScreenController scController = context.getBean(ScreenController.class);
     @FXML
     private Button startButton;
     @FXML
     private TextField nicknameField;
+
     public static void main(String[] args) {
         GameServer gameServer = context.getBean(GameServer.class);
 
@@ -48,21 +46,22 @@ public class GameController extends Application {
         // Connect client to server
         Player player = new Player(nicknameField.getCharacters().toString());
         client.connectToServer("ws://127.0.0.1:8080/air-hockey", player);
+        scController.activate("hockeyField.fxml");
     }
 
     @Override
     public void start(Stage stage) {
         try {
-            URL url = getClass().getResource("../../../../layout.fxml");
-            Parent root = FXMLLoader.load(url);
-            Scene scene = new Scene(root, 400, 600);
+            scController.init();
+            scController.activate("signIn.fxml");
 
-            stage.setTitle("Air hockey");
-            stage.setScene(scene);
+            stage.setScene(scController.getMain());
+            stage.setTitle("Air Hockey");
             stage.show();
         } catch (Exception ex) {
             Alert alert = new Alert(Alert.AlertType.ERROR, "FXML file was not found");
             alert.showAndWait();
         }
     }
+
 }
