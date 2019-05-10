@@ -1,11 +1,9 @@
 package com.github.airhockey.config;
 
-import com.github.airhockey.controllers.ScreenController;
+import com.github.airhockey.services.ViewResolver;
 import com.github.airhockey.websocket.client.GameClientEndpoint;
 import com.github.airhockey.websocket.server.GameServer;
 import com.github.airhockey.websocket.utils.JSONUtils;
-import javafx.scene.Scene;
-import javafx.scene.layout.Pane;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -27,8 +25,7 @@ public class RootConfig {
     }
 
     @Bean
-    public ScreenController sceneController() {
-        Scene scene = new Scene(new Pane(), 480, 640);
-        return new ScreenController(scene);
+    public ViewResolver viewResolver() {
+        return new ViewResolver();
     }
 }

@@ -2,11 +2,17 @@ package com.github.airhockey.controllers;
 
 import com.github.airhockey.config.RootConfig;
 import com.github.airhockey.entities.Player;
+import com.github.airhockey.services.ViewResolver;
 import com.github.airhockey.websocket.client.GameClientEndpoint;
 import com.github.airhockey.websocket.server.GameServer;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
@@ -15,15 +21,17 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import javax.websocket.DeploymentException;
+import java.io.IOException;
 
 public class GameController extends Application {
     private static ApplicationContext context = new AnnotationConfigApplicationContext(RootConfig.class);
     private static GameClientEndpoint client = context.getBean(GameClientEndpoint.class);
-    private static ScreenController scController = context.getBean(ScreenController.class);
-    @FXML
-    private Button startButton;
+    private static ViewResolver viewResolver = context.getBean(ViewResolver.class);
     @FXML
     private TextField nicknameField;
+    @FXML
+    private Button startButton;
+
 
     public static void main(String[] args) {
         GameServer gameServer = context.getBean(GameServer.class);
@@ -46,16 +54,41 @@ public class GameController extends Application {
         // Connect client to server
         Player player = new Player(nicknameField.getCharacters().toString());
         client.connectToServer("ws://127.0.0.1:8080/air-hockey", player);
-        scController.activate("hockeyField.fxml");
+        // Close current window
+        Stage signInStage = (Stage) ((Node)event.getSource()).getScene().getWindow();
+        signInStage.close();
+
+        // Load view for hockeyField
+        FXMLLoader loader = new FXMLLoader(viewResolver.getView("hockeyField.fxml"));
+        Parent root = null;
+        try {
+            root = loader.load();
+        } catch (IOException ex) {
+            Alert loaderAlert = new Alert(Alert.AlertType.ERROR, "Cannot load view");
+            loaderAlert.showAndWait();
+        }
+        // Init controller
+        FieldController fieldCtrl = loader.getController();
+        fieldCtrl.setOwnNickname(player.getNickname());
+
+        // Show hockeyField scene in new window
+        Stage stage = new Stage();
+        stage.setScene(new Scene(root, 480, 640));
+        stage.setTitle("Hockey field");
+        stage.show();
     }
 
     @Override
     public void start(Stage stage) {
         try {
-            scController.init();
-            scController.activate("signIn.fxml");
+            // Change default behaviout to prevent code of windows closing
+            // Platform.setImplicitExit(false);
 
-            stage.setScene(scController.getMain());
+            // Init views
+            viewResolver.init();
+            // Show signIn scene
+            Parent root = FXMLLoader.load(viewResolver.getView("signIn.fxml"));
+            stage.setScene(new Scene(root, 480, 640));
             stage.setTitle("Air Hockey");
             stage.show();
         } catch (Exception ex) {
@@ -63,5 +96,4 @@ public class GameController extends Application {
             alert.showAndWait();
         }
     }
-
 }
