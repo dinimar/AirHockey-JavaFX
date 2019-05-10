@@ -34,19 +34,7 @@ public class GameController extends Application {
 
 
     public static void main(String[] args) {
-        GameServer gameServer = context.getBean(GameServer.class);
-
-        try {
-            // Launch server
-            gameServer.initServer();
-            gameServer.launchServer();
-
-            // Launch game window
-            launch(args);
-        } catch (DeploymentException ex) {
-            Alert deployExAl = new Alert(Alert.AlertType.ERROR, "Some bugs during deployment");
-            deployExAl.showAndWait();
-        }
+        launch(args);
     }
 
     @FXML
