@@ -10,13 +10,18 @@ import lombok.Setter;
 
 @Setter
 @Getter
-public class Circle extends Point {
+public class Circle {
     protected Double radius;
     protected Color color;
+    protected Point center;
 
     public Circle(double x, double y, double radius, Color color) {
-        super(x, y);
+        center = new Point(x, y);
         this.radius = radius;
         this.color = color;
+    }
+
+    public Double distance(Circle c) {
+        return c.getCenter().distance(center) - radius - c.getRadius();
     }
 }

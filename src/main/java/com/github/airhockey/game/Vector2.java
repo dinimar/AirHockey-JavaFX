@@ -22,4 +22,8 @@ public class Vector2 {
         x += v.x;
         y += v.y;
     }
+
+    public Double distance(Vector2 v) {
+        return Math.sqrt((x - v.getX()) * (x - v.getX()) + (y - v.getY()) * (y - v.getY()));
+    }
 }

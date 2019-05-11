@@ -24,6 +24,14 @@ public class RenderFuncFabricImpl implements RenderFuncFabric<GroupRenderProvide
 
     @Override
     public RenderFunc<GroupRenderProvider> getRenderFunc(Class objectClass) {
-        return m.get(objectClass);
+        while (m.containsKey(objectClass) == false && objectClass.equals(Object.class) == false) {
+            objectClass = objectClass.getSuperclass();
+        }
+        if (m.containsKey(objectClass)) {
+            return m.get(objectClass);
+        }
+        else {
+            return null;
+        }
     }
 }

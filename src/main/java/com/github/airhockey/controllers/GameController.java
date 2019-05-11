@@ -63,7 +63,8 @@ public class GameController extends Application {
 
             @Override
             public void handle(long now) {
-                provider.render(gameProccess.getRenderableObject());
+                gameProccess.compute();
+                provider.render(gameProccess.getRenderableObjects());
             }
         }.start();
 

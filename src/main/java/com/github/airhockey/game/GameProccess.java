@@ -21,9 +21,9 @@ import java.util.List;
  */
 @Getter
 public class GameProccess {
-    protected List<Object> renderableObject;
+    protected List<Collisionable> renderableObjects;
     protected GameField gameField;
-    protected Circle puck, playerPuck1, playerPuck2;
+    protected MoveableCircle puck, playerPuck1, playerPuck2;
     protected Boolean isPaused;
     protected Player player1, player2;
     protected Vector2D cursor;
@@ -37,12 +37,30 @@ public class GameProccess {
     public GameProccess() {
         // TODO вынести хардкод
         gameField = new GameField(new Color(100, 100, 100), 800d, 500d);
-        puck = new Circle(gameField.getSizeX() / 2 - 20, gameField.getSizeY() / 2 - 20, 20, new Color(255, 255, 255));
-        playerPuck1 = new Circle(gameField.getSizeX() - 40, gameField.getSizeY() / 2 - 20, 20, new Color(0, 255, 0));
-        playerPuck2 = new Circle(0, gameField.getSizeY() / 2 - 20, 20, new Color(255, 0, 0));
-        renderableObject = new ArrayList<>();
-        renderableObject.add(puck);
-        renderableObject.add(playerPuck1);
+        puck = new MoveableCircle(
+                gameField.getSizeX() / 2 - 20,
+                gameField.getSizeY() / 2 - 20,
+                20,
+                new Color(255, 255, 255),
+                20d,
+                new Vector2(0d, 0d));
+        playerPuck1 = new MoveableCircle(
+                gameField.getSizeX() - 40,
+                gameField.getSizeY() / 2 - 20,
+                20, new Color(0, 255, 0),
+                20d,
+                new Vector2(0d, 0d));
+        playerPuck2 = new MoveableCircle(
+                0,
+                gameField.getSizeY() / 2 - 20,
+                20,
+                new Color(255, 0, 0),
+                20d,
+                new Vector2(0d, 0d));
+        renderableObjects = new ArrayList<>();
+        renderableObjects.add(puck);
+        renderableObjects.add(playerPuck1);
+        isPaused = false;
     }
 
     public void start() {
@@ -61,6 +79,13 @@ public class GameProccess {
             return;
         }
         Long time = System.nanoTime();
+
+        for (Collisionable o : renderableObjects) {
+            for (Collisionable o2 : renderableObjects) {
+                o.collision(o2);
+            }
+        }
+
         prefTime = time;
     }
 }

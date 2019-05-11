@@ -12,8 +12,10 @@ package com.github.airhockey.game.render.javafx;
 
 import com.github.airhockey.game.Circle;
 import com.github.airhockey.game.GameProccess;
+import com.github.airhockey.game.MoveableCircle;
 import com.github.airhockey.game.Vector2;
 import com.github.airhockey.game.converters.ColorToJavaFXColorConverter;
+import com.github.airhockey.game.render.RenderFunc;
 import com.github.airhockey.game.render.RenderFuncFabric;
 import com.github.airhockey.game.render.RenderProvider;
 import javafx.event.EventHandler;
@@ -48,21 +50,10 @@ public class GroupRenderProvider implements RenderProvider {
 
         // TODO вынести работу с событиями в EventProvider
         group.setOnMouseMoved(e -> {
-            Circle c = proccess.getPlayerPuck1();
-            Vector2 newPos = new Vector2(e.getX() - c.getRadius(), e.getY() - c.getRadius());
-            if (newPos.getX() > gameProccess.getGameField().getSizeX() - c.getRadius() * 2) {
-                newPos.setX(gameProccess.getGameField().getSizeX() - c.getRadius() * 2);
-            }
-            if (newPos.getX() < 0) {
-                newPos.setX(0d);
-            }
-            if (newPos.getY() > gameProccess.getGameField().getSizeY() - c.getRadius() * 2) {
-                newPos.setY(gameProccess.getGameField().getSizeY() - c.getRadius() * 2);
-            }
-            if (newPos.getY() < 0) {
-                newPos.setY(0d);
-            }
-            c.moveTo(newPos);
+            MoveableCircle c = proccess.getPlayerPuck1();
+            Vector2 newPos = new Vector2(e.getX(), e.getY());
+            c.getCenter().moveTo(newPos);
+            c.collision(proccess.getGameField());
         });
     }
 
@@ -76,11 +67,19 @@ public class GroupRenderProvider implements RenderProvider {
     }
 
     public void render(Object o) {
-        funcFabric.getRenderFunc(o.getClass()).render(o, this);
+        if (List.class.isAssignableFrom(o.getClass())) {
+            render((List) o);
+            return;
+        }
+        RenderFunc f = funcFabric.getRenderFunc(o.getClass());
+        if (f == null) {
+            return;
+        }
+        f.render(o, this);
     }
 
     public boolean supports(Object o) {
-        return o.getClass().equals(Circle.class);
+        return Circle.class.isAssignableFrom(o.getClass());
     }
 
     public void setUp() {

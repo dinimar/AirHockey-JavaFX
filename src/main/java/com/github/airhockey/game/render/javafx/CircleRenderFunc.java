@@ -28,14 +28,14 @@ public class CircleRenderFunc implements RenderFunc<GroupRenderProvider> {
             Node node = provider.objects.get(circle);
             javafx.scene.shape.Circle c = (javafx.scene.shape.Circle) node;
             c.setRadius(circle.getRadius());
-            c.setCenterX(circle.getX() + circle.getRadius() + provider.getOffsetX());
-            c.setCenterY(circle.getY() + circle.getRadius() + provider.getOffsetY());
+            c.setCenterX(circle.getCenter().getX() + provider.getOffsetX());
+            c.setCenterY(circle.getCenter().getY() + provider.getOffsetY());
         }
         else {
             synchronized (nodes) {
                 nodes.add(new javafx.scene.shape.Circle(
-                        circle.getX() + circle.getRadius() + provider.getOffsetX(),
-                        circle.getY() + circle.getRadius() + provider.getOffsetY(),
+                        circle.getCenter().getX() + provider.getOffsetX(),
+                        circle.getCenter().getY() + provider.getOffsetY(),
                         circle.getRadius(),
                         (new ColorToJavaFXColorConverter()).convert(circle.getColor())));
                 Node node = nodes.get(nodes.size() - 1);
