@@ -1,7 +1,6 @@
 package com.github.airhockey.websocket.client;
 
 
-import com.github.airhockey.config.RootConfig;
 import com.github.airhockey.entities.Player;
 //import com.github.airhockey.websocket.exceptions.OpponentNotConnectedException;
 import com.github.airhockey.websocket.messages.Message;

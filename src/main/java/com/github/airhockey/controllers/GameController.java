@@ -1,13 +1,11 @@
 package com.github.airhockey.controllers;
 
-import com.github.airhockey.config.RootConfig;
+import com.github.airhockey.config.ClientConfig;
 import com.github.airhockey.config.ViewConfig;
 import com.github.airhockey.entities.Player;
 import com.github.airhockey.services.ViewResolver;
 import com.github.airhockey.websocket.client.GameClientEndpoint;
-import com.github.airhockey.websocket.server.GameServer;
 import javafx.application.Application;
-import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -21,7 +19,6 @@ import javafx.stage.Stage;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
-import javax.websocket.DeploymentException;
 import java.io.IOException;
 
 public class GameController extends Application {
@@ -34,7 +31,7 @@ public class GameController extends Application {
 
 
     public static void main(String[] args) {
-        ApplicationContext context = new AnnotationConfigApplicationContext(RootConfig.class, ViewConfig.class);
+        ApplicationContext context = new AnnotationConfigApplicationContext(ClientConfig.class, ViewConfig.class);
         GameController.client = context.getBean(GameClientEndpoint.class);
         GameController.viewResolver = context.getBean(ViewResolver.class);
         launch(args);
