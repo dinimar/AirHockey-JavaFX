@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.net.URL?>
+<?import javafx.scene.canvas.Canvas?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+
+<?import javafx.scene.Group?>
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="800" minWidth="500" prefHeight="400.0" prefWidth="600.0" styleClass="root" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1">
+   <top>
+      <HBox prefHeight="50.0" prefWidth="500.0" BorderPane.alignment="CENTER">
+         <children>
+            <Label styleClass="header" text="Air Hockey" />
+            <Label styleClass="score" text="0:0" />
+         </children>
+      </HBox>
+   </top>
+   <center>
+      <Group id="group"  styleClass="group" BorderPane.alignment="CENTER" />
+   </center>
+
+    <!--CSS-->
+    <stylesheets>
+        <URL value="@/assets/css/game.css" />
+    </stylesheets>
+</BorderPane>

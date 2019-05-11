@@ -1,58 +1,72 @@
 package com.github.airhockey.controllers;
 
 import com.github.airhockey.config.RootConfig;
-import com.github.airhockey.websocket.client.GameClientEndpoint;
-import com.github.airhockey.websocket.server.GameServer;
+import com.github.airhockey.game.GameProccess;
+import com.github.airhockey.game.render.javafx.GroupRenderProvider;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Group;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.stereotype.Component;
 
-import javax.websocket.DeploymentException;
-import java.net.URI;
-import java.net.URISyntaxException;
+import java.io.IOException;
 
+@Component
 public class GameController extends Application {
+
+    private final String groupId = "group";
+
     public static void main(String[] args) {
-        ApplicationContext context = new AnnotationConfigApplicationContext(RootConfig.class);
-        GameServer gameServer = context.getBean(GameServer.class);
-
-        try {
-            // Launch server
-            gameServer.initServer();
-            gameServer.launchServer();
-
-            // Client init
-            GameClientEndpoint clientEndpoint = null;
-            try {
-                clientEndpoint = new GameClientEndpoint(new URI("ws://127.0.0.1:8080/air-hockey"));
-            } catch (URISyntaxException ex) {
-            }
-            // Launch game window
-            launch(args);
-        } catch (DeploymentException ex) {
-            Alert deployExAl = new Alert(Alert.AlertType.ERROR);
-            deployExAl.showAndWait();
-        }
+        launch(args);
     }
-
     @Override
     public void start(Stage stage) {
-        try {
-            Parent root = FXMLLoader.load(getClass().getResource("../../../../layout.fxml"));
-            Scene scene = new Scene(root, 400, 600);
+        ApplicationContext context = new AnnotationConfigApplicationContext(RootConfig.class);
 
-            stage.setTitle("Air hockey");
-            stage.setScene(scene);
-            stage.show();
-        } catch (Exception ex) {
+//        VBox root = new VBox();
+        Parent root = new VBox();
+        try {
+            root = FXMLLoader.load(getClass().getResource("../../../../gameLayout.fxml"));
+        } catch (IOException ex) {
             Alert alert = new Alert(Alert.AlertType.ERROR, "FXML file was not found");
             alert.showAndWait();
+            return;
         }
+        Scene scene = new Scene(root, 800, 500);
+
+        Group group = null;
+        for (Node node : root.getChildrenUnmodifiable()) {
+            if (node.getId() != null && node.getId().equals(this.groupId)) {
+                group = (Group) node;
+            }
+        }
+        if (group == null) {
+            // TODO обработка ошибок
+            System.err.println("Group not found");
+            return;
+        }
+
+        GameProccess gameProccess = new GameProccess();
+        GroupRenderProvider provider = new GroupRenderProvider(group);
+        provider.setUp(gameProccess);
+
+//        gameAnimationTimer.setCanvas(groupId);
+//        gameAnimationTimer.setGc(groupId.getGraphicsContext2D());
+//        gameAnimationTimer.start();
+
+        stage.setMinHeight(500);
+        stage.setMinWidth(800);
+        stage.setTitle("Air hockey");
+        stage.setScene(scene);
+//        stage.setResizable(false);
+        stage.show();
     }
 
 }

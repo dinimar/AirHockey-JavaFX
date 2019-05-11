@@ -1,0 +1,22 @@
+.root {
+    -fx-background-color: #000;
+    -fx-min-width: 800;
+    -fx-min-height: 500 ;
+}
+
+.header {
+    -fx-font-size: 15px;
+    -fx-text-fill: white;
+    -fx-label-padding: 10px;
+    -fx-height: 40;
+    /*-fx-alignment: left;*/
+}
+
+.score {
+    -fx-font-size: 15px;
+    -fx-text-fill: #00ffa5;
+    -fx-label-padding: 10px;
+    -fx-height: 40;
+    /*-fx-alignment: right;*/
+}
+
