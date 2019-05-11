@@ -1,7 +1,11 @@
 package com.github.airhockey.websocket.server;
 
+import com.github.airhockey.config.MessageConfig;
 import com.github.airhockey.entities.Player;
 import org.glassfish.tyrus.server.Server;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import javax.websocket.DeploymentException;
 import javax.websocket.OnMessage;
@@ -16,6 +20,8 @@ import java.util.Objects;
 public class GameServer {
     private Server server;
     private List<Player> playerList = new ArrayList<>();
+    @Autowired
+    public ServerMessageHandler messageHandler;
 
     public void initServer() {
         this.server = new Server("127.0.0.1", 8080, "", null, this.getClass());
@@ -35,7 +41,18 @@ public class GameServer {
 
     @OnMessage
     public void onMessage(String message, Session session) {
-        System.out.println("Message Received:\n"+message);
+//        messageHandler.receiveMessage(message);
+        System.out.println("HOCKEY-SERVER: New message is received!\n"+message);
+
+//        Message clientResp = messageHandler.createResponse();
+//        if (clientResp.getMsgType().equals(MessageType.OPPONENT_INFO)) {
+//            for(Player player: playerList) {
+//                if (!player.getSession().equals(session)) {
+//                    clientResp.addProperty(player);
+//                    session.getAsyncRemote().sendObject(clientResp);
+//                }
+//            }
+//        }
     }
 
     public List<Player> getPlayerList() {
