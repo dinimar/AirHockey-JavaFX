@@ -6,11 +6,11 @@
 package com.github.airhockey.game.render.javafx;
 
 import com.github.airhockey.game.Circle;
+import com.github.airhockey.game.StaticCircleImpl;
 import com.github.airhockey.game.converters.ColorToJavaFXColorConverter;
 import com.github.airhockey.game.render.RenderFunc;
 import javafx.collections.ObservableList;
 import javafx.scene.Node;
-import javafx.scene.paint.Color;
 
 public class CircleRenderFunc implements RenderFunc<GroupRenderProvider> {
     @Override

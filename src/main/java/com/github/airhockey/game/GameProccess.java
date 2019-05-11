@@ -21,7 +21,7 @@ import java.util.List;
  */
 @Getter
 public class GameProccess {
-    protected List<Collisionable> renderableObjects;
+    protected List<DynamicObject> renderableObjects;
     protected GameField gameField;
     protected MoveableCircle puck, playerPuck1, playerPuck2;
     protected Boolean isPaused;
@@ -43,7 +43,7 @@ public class GameProccess {
                 20,
                 new Color(255, 255, 255),
                 20d,
-                new Vector2(0d, 0d));
+                new Vector2(1d, 1d));
         playerPuck1 = new MoveableCircle(
                 gameField.getSizeX() - 40,
                 gameField.getSizeY() / 2 - 20,
@@ -61,6 +61,7 @@ public class GameProccess {
         renderableObjects.add(puck);
         renderableObjects.add(playerPuck1);
         isPaused = false;
+        prefTime = System.nanoTime();
     }
 
     public void start() {
@@ -78,12 +79,22 @@ public class GameProccess {
         if (isPaused) {
             return;
         }
-        Long time = System.nanoTime();
 
+        // обработка столкновений
         for (Collisionable o : renderableObjects) {
             for (Collisionable o2 : renderableObjects) {
                 o.collision(o2);
             }
+        }
+        for (DynamicObject o : renderableObjects) {
+            o.setF(o.getNewF());
+        }
+
+        // обработка движения
+        Long time = System.nanoTime();
+        Long delta = time - prefTime;
+        for (DynamicObject o : renderableObjects) {
+            o.move();
         }
 
         prefTime = time;

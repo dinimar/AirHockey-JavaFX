@@ -10,21 +10,15 @@
 
 package com.github.airhockey.game.render.javafx;
 
-import com.github.airhockey.game.Circle;
-import com.github.airhockey.game.GameProccess;
-import com.github.airhockey.game.MoveableCircle;
-import com.github.airhockey.game.Vector2;
+import com.github.airhockey.game.*;
 import com.github.airhockey.game.converters.ColorToJavaFXColorConverter;
 import com.github.airhockey.game.render.RenderFunc;
 import com.github.airhockey.game.render.RenderFuncFabric;
 import com.github.airhockey.game.render.RenderProvider;
-import javafx.event.EventHandler;
 import javafx.scene.Group;
 import javafx.scene.Node;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.shape.Rectangle;
 import lombok.Getter;
-import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
 
 import java.util.HashMap;
 import java.util.List;

@@ -6,9 +6,9 @@
 package com.github.airhockey.game.render.javafx;
 
 import com.github.airhockey.game.Circle;
+import com.github.airhockey.game.StaticCircleImpl;
 import com.github.airhockey.game.render.RenderFunc;
 import com.github.airhockey.game.render.RenderFuncFabric;
-import com.github.airhockey.game.render.RenderProvider;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -24,13 +24,19 @@ public class RenderFuncFabricImpl implements RenderFuncFabric<GroupRenderProvide
 
     @Override
     public RenderFunc<GroupRenderProvider> getRenderFunc(Class objectClass) {
-        while (m.containsKey(objectClass) == false && objectClass.equals(Object.class) == false) {
-            objectClass = objectClass.getSuperclass();
+        Class o = objectClass;
+        while (m.containsKey(o) == false && o.equals(Object.class) == false) {
+            o = o.getSuperclass();
         }
-        if (m.containsKey(objectClass)) {
-            return m.get(objectClass);
+        if (m.containsKey(o)) {
+            return m.get(o);
         }
         else {
+            for (Class intf : objectClass.getInterfaces()) {
+                if (m.containsKey(intf)) {
+                    return m.get(intf);
+                }
+            }
             return null;
         }
     }
