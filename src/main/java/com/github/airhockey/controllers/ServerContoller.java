@@ -9,19 +9,18 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 import javax.websocket.DeploymentException;
 
 public class ServerContoller {
+    private static GameServer gameServer;
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
         ApplicationContext context = new AnnotationConfigApplicationContext(ServerConfig.class);
-        GameServer gameServer = context.getBean(GameServer.class);
+        gameServer = context.getBean(GameServer.class);
 
         try {
             // Launch server
             gameServer.initServer();
             gameServer.launchServer();
 
-            while (true) {
-
-            }
+            while (true) {}
 
         } catch (DeploymentException ex) {
             Alert deployExAl = new Alert(Alert.AlertType.ERROR, "Some bugs during deployment");

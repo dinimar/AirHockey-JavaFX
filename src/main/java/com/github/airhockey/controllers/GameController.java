@@ -58,6 +58,8 @@ public class GameController extends Application {
         // Init controller
         FieldController fieldCtrl = loader.getController();
         fieldCtrl.setOwnNickname(player.getNickname());
+        fieldCtrl.setClient(client);
+        fieldCtrl.setPlayer(player);
 
         // Show hockeyField scene in new window
         Stage stage = new Stage();

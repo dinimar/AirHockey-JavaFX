@@ -1,15 +1,24 @@
-package com.github.airhockey.websocket.server;
+package com.github.airhockey.websocket.client;
 
 import com.github.airhockey.entities.Player;
 import com.github.airhockey.websocket.messages.Message;
 import com.github.airhockey.websocket.messages.MessageType;
 import com.github.airhockey.websocket.utils.JSONConverter;
-import com.google.gson.internal.LinkedTreeMap;
 import org.springframework.beans.factory.annotation.Autowired;
 
+public class ClientMessageHandler {
+    @Autowired
+    private JSONConverter jsonConverter;
 
-public class ServerMessageHandler {
-    private JSONConverter jsonConverter = new JSONConverter();
+//    protected Object createResponse() {
+//        Player opponent = null;
+//
+//        if (lastReceivedMsg.getMsgType().equals(MessageType.OPPONENT_INFO)) {
+//            opponent = (Player) lastReceivedMsg.getProperties().get(0);
+//        }
+//
+//        return opponent;
+//    }
 
     protected Message createResponse(String receivedMessage) {
         Message req = parseMessage(receivedMessage);
@@ -24,7 +33,10 @@ public class ServerMessageHandler {
         return resp;
     }
 
-    private Message parseMessage(String message) {
+//    protected void receiveMessage(String message) {
+//        lastReceivedMsg = jsonConverter.toMessage(message);
+//    }
+    protected Message parseMessage(String message) {
         return jsonConverter.toMessage(message);
     }
 }

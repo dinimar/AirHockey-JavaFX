@@ -1,11 +1,14 @@
 package com.github.airhockey.websocket.server;
 
-import com.github.airhockey.config.MessageConfig;
 import com.github.airhockey.entities.Player;
+import com.github.airhockey.websocket.messages.Message;
+import com.github.airhockey.websocket.messages.MessageType;
+import com.github.airhockey.websocket.utils.JSONConverter;
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import com.google.gson.internal.LinkedTreeMap;
 import org.glassfish.tyrus.server.Server;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import javax.websocket.DeploymentException;
 import javax.websocket.OnMessage;
@@ -19,9 +22,8 @@ import java.util.Objects;
 @ServerEndpoint(value = "/air-hockey")
 public class GameServer {
     private Server server;
-    private List<Player> playerList = new ArrayList<>();
-    @Autowired
-    public ServerMessageHandler messageHandler;
+    private static List<Player> playerList = new ArrayList<>();
+    private ServerMessageHandler messageHandler = new ServerMessageHandler();
 
     public void initServer() {
         this.server = new Server("127.0.0.1", 8080, "", null, this.getClass());
@@ -41,18 +43,32 @@ public class GameServer {
 
     @OnMessage
     public void onMessage(String message, Session session) {
-//        messageHandler.receiveMessage(message);
         System.out.println("HOCKEY-SERVER: New message is received!\n"+message);
+        JSONConverter jsonConverter = new JSONConverter();
 
-//        Message clientResp = messageHandler.createResponse();
-//        if (clientResp.getMsgType().equals(MessageType.OPPONENT_INFO)) {
-//            for(Player player: playerList) {
-//                if (!player.getSession().equals(session)) {
-//                    clientResp.addProperty(player);
-//                    session.getAsyncRemote().sendObject(clientResp);
-//                }
-//            }
-//        }
+        Message receivedMsg = jsonConverter.toMessage(message);
+
+        if (receivedMsg.getMsgType().equals(MessageType.PLAYER_INFO)) {
+            for(Player player: playerList) {
+                if (player.getSession().equals(session)) {
+                    LinkedTreeMap playerInfo = (LinkedTreeMap) receivedMsg.getProperties().get(0);
+                    player.setNickname((String) playerInfo.get("nickname"));
+                }
+            }
+        } else if (receivedMsg.getMsgType().equals(MessageType.OPPONENT_INFO)) {
+            Message clientResp = messageHandler.createResponse(message);
+
+            for(Player player: playerList) {
+                if (!player.getSession().equals(session)) {
+                    Player opponent = new Player(player.getNickname());
+                    clientResp.addProperty(opponent);
+                    String resMsg = jsonConverter.toJson(clientResp);
+
+                    session.getAsyncRemote().sendText(resMsg);
+                    System.out.println("HOCKEY-SERVER: Message sent:\n"+resMsg);
+                }
+            }
+        }
     }
 
     public List<Player> getPlayerList() {
