@@ -23,7 +23,7 @@ public class Color {
         this.red = red;
         this.green = green;
         this.blue = blue;
-        this.transparency = 100;
+        transparency = 100;
     }
 
     public Color(Integer red, Integer green, Integer blue, Integer transparency) {

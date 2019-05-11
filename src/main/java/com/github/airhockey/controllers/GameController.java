@@ -3,6 +3,7 @@ package com.github.airhockey.controllers;
 import com.github.airhockey.config.RootConfig;
 import com.github.airhockey.game.GameProccess;
 import com.github.airhockey.game.render.javafx.GroupRenderProvider;
+import javafx.animation.AnimationTimer;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Group;
@@ -17,6 +18,8 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+
+import static java.lang.Thread.sleep;
 
 @Component
 public class GameController extends Application {
@@ -54,15 +57,18 @@ public class GameController extends Application {
         }
 
         GameProccess gameProccess = new GameProccess();
-        GroupRenderProvider provider = new GroupRenderProvider(group);
-        provider.setUp(gameProccess);
+        GroupRenderProvider provider = new GroupRenderProvider(group, gameProccess);
+//        provider.render(gameProccess.getRenderableObject());
+        new AnimationTimer(){
 
-//        gameAnimationTimer.setCanvas(groupId);
-//        gameAnimationTimer.setGc(groupId.getGraphicsContext2D());
-//        gameAnimationTimer.start();
+            @Override
+            public void handle(long now) {
+                provider.render(gameProccess.getRenderableObject());
+            }
+        }.start();
 
-        stage.setMinHeight(500);
-        stage.setMinWidth(800);
+        stage.setMinHeight(700);
+        stage.setMinWidth(900);
         stage.setTitle("Air hockey");
         stage.setScene(scene);
 //        stage.setResizable(false);

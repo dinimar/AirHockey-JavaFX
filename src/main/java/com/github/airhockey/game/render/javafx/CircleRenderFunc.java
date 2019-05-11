@@ -8,6 +8,8 @@ package com.github.airhockey.game.render.javafx;
 import com.github.airhockey.game.Circle;
 import com.github.airhockey.game.converters.ColorToJavaFXColorConverter;
 import com.github.airhockey.game.render.RenderFunc;
+import javafx.collections.ObservableList;
+import javafx.scene.Node;
 import javafx.scene.paint.Color;
 
 public class CircleRenderFunc implements RenderFunc<GroupRenderProvider> {
@@ -21,11 +23,24 @@ public class CircleRenderFunc implements RenderFunc<GroupRenderProvider> {
             // TODO Обработка исключений
             return;
         }
-        provider.getGroup().getChildren().add(new javafx.scene.shape.Circle(
-                circle.getRadius(),
-                circle.getX(),
-                circle.getY(),
-                (new ColorToJavaFXColorConverter()).convert(circle.getColor()))
-        );
+        ObservableList<Node> nodes = provider.group.getChildren();
+        if (provider.objects.containsKey(circle)) {
+            Node node = provider.objects.get(circle);
+            javafx.scene.shape.Circle c = (javafx.scene.shape.Circle) node;
+            c.setRadius(circle.getRadius());
+            c.setCenterX(circle.getX() + circle.getRadius() + provider.getOffsetX());
+            c.setCenterY(circle.getY() + circle.getRadius() + provider.getOffsetY());
+        }
+        else {
+            synchronized (nodes) {
+                nodes.add(new javafx.scene.shape.Circle(
+                        circle.getX() + circle.getRadius() + provider.getOffsetX(),
+                        circle.getY() + circle.getRadius() + provider.getOffsetY(),
+                        circle.getRadius(),
+                        (new ColorToJavaFXColorConverter()).convert(circle.getColor())));
+                Node node = nodes.get(nodes.size() - 1);
+                provider.objects.put(circle, node);
+            }
+        }
     }
 }

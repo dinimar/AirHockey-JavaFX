@@ -17,8 +17,13 @@ import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
 
 @Setter
 @Getter
-public class Point extends Vector2D {
+public class Point extends Vector2 {
     public Point(double x, double y) {
         super(x, y);
+    }
+
+    public void moveTo(Vector2 v) {
+        this.x = v.x;
+        this.y = v.y;
     }
 }

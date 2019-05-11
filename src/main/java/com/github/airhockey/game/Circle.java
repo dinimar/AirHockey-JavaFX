@@ -17,5 +17,6 @@ public class Circle extends Point {
     public Circle(double x, double y, double radius, Color color) {
         super(x, y);
         this.radius = radius;
+        this.color = color;
     }
 }
