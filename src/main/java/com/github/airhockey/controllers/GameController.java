@@ -1,6 +1,7 @@
 package com.github.airhockey.controllers;
 
 import com.github.airhockey.config.RootConfig;
+import com.github.airhockey.config.ViewConfig;
 import com.github.airhockey.entities.Player;
 import com.github.airhockey.services.ViewResolver;
 import com.github.airhockey.websocket.client.GameClientEndpoint;
@@ -24,9 +25,8 @@ import javax.websocket.DeploymentException;
 import java.io.IOException;
 
 public class GameController extends Application {
-    private static ApplicationContext context = new AnnotationConfigApplicationContext(RootConfig.class);
-    private static GameClientEndpoint client = context.getBean(GameClientEndpoint.class);
-    private static ViewResolver viewResolver = context.getBean(ViewResolver.class);
+    private static GameClientEndpoint client;
+    private static ViewResolver viewResolver;
     @FXML
     private TextField nicknameField;
     @FXML
@@ -34,6 +34,9 @@ public class GameController extends Application {
 
 
     public static void main(String[] args) {
+        ApplicationContext context = new AnnotationConfigApplicationContext(RootConfig.class, ViewConfig.class);
+        GameController.client = context.getBean(GameClientEndpoint.class);
+        GameController.viewResolver = context.getBean(ViewResolver.class);
         launch(args);
     }
 

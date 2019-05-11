@@ -1,6 +1,7 @@
 package com.github.airhockey.services;
 
 import com.github.airhockey.config.ViewConfig;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
@@ -10,7 +11,8 @@ import java.util.HashMap;
 import java.util.List;
 
 public class ViewResolver {
-    private ApplicationContext context = new AnnotationConfigApplicationContext(ViewConfig.class);
+    @Autowired
+    private List<URL> viewsURLs;
     private HashMap<String, URL> viewMap = new HashMap<>();
 
     private void addView(String name, URL loader) {
@@ -26,11 +28,9 @@ public class ViewResolver {
     }
 
     public void init() {
-        List<URL> layouts = (List<URL>) context.getBean("fxmlLayoutsURLs");
-
-        for (URL layoutUrl : layouts) {
+        for (URL viewURL : viewsURLs) {
             try {
-                addView(new File(layoutUrl.toURI()).getName(), layoutUrl);
+                addView(new File(viewURL.toURI()).getName(), viewURL);
             } catch (Exception ex) {
                 System.err.println("FXML: Layout loading exception");
             }

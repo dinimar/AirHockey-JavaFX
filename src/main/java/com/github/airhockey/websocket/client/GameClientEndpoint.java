@@ -86,8 +86,6 @@ public class GameClientEndpoint {
     }
 
     public void sendMessage(Message message) {
-        ApplicationContext context = new AnnotationConfigApplicationContext(RootConfig.class);
-
         String resMsg = jsonConverter.toJson(message);
         this.userSession.getAsyncRemote().sendText(resMsg);
     }
