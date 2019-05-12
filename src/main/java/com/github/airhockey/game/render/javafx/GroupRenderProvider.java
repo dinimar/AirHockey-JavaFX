@@ -44,10 +44,7 @@ public class GroupRenderProvider implements RenderProvider {
 
         // TODO вынести работу с событиями в EventProvider
         group.setOnMouseMoved(e -> {
-            MoveableCircle c = proccess.getPlayerPuck1();
-            Vector2 newPos = new Vector2(e.getX(), e.getY());
-            c.getCenter().moveTo(newPos);
-            c.collision(proccess.getGameField());
+            gameProccess.setMouseLocation(new Vector2(e.getX(), e.getY()));
         });
     }
 
@@ -73,7 +70,7 @@ public class GroupRenderProvider implements RenderProvider {
     }
 
     public boolean supports(Object o) {
-        return Circle.class.isAssignableFrom(o.getClass());
+        return funcFabric.getRenderFunc(o.getClass()) != null;
     }
 
     public void setUp() {

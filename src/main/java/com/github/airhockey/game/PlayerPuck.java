@@ -5,7 +5,7 @@
 
 package com.github.airhockey.game;
 
-public class PlayerPuck extends MoveableCircle {
+public class PlayerPuck extends MoveableCircle implements Circle, Collisionable, Moveable {
 
     @Override
     public void move(Double deltaT) {
@@ -16,9 +16,9 @@ public class PlayerPuck extends MoveableCircle {
         super(x, y, radius, color, mass, f);
     }
 
-    public void computeSpeedAndCoord(Double newX, Double newY, Double deltaT) {
-        speed = (new Vector2(newX - getX(), newY - getY())).multiply(1 / deltaT);
-        setX(newX);
-        setY(newY);
+    public void computeSpeedAndCoord(Vector2 mouseLocation, Double deltaT) {
+        speed = (new Vector2(mouseLocation.getX() - getX(), mouseLocation.getY() - getY())).multiply(1 / deltaT);
+        setX(mouseLocation.getX());
+        setY(mouseLocation.getY());
     }
 }

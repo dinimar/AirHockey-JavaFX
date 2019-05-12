@@ -7,6 +7,7 @@ package com.github.airhockey.game;
 
 import com.github.airhockey.game.events.GameEvent;
 import lombok.Getter;
+import lombok.Setter;
 import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
 
 import java.util.ArrayList;
@@ -22,11 +23,14 @@ import java.util.List;
 public class GameProccess {
     protected List<DynamicObject> renderableObjects;
     protected GameField gameField;
-    protected MoveableCircle puck, playerPuck1, playerPuck2;
+    protected MoveableCircle puck;
+    protected PlayerPuck playerPuck1, playerPuck2;
     protected Boolean isPaused;
     protected Player player1, player2;
     protected Vector2D cursor;
     protected List<GameEvent> events;
+    @Setter
+    protected Vector2 mouseLocation;
     protected Double gameSpeed;
     /**
      * время в наносекундах, когда последний раз вызвался метод compute.
@@ -43,39 +47,40 @@ public class GameProccess {
                 20,
                 new Color(255, 255, 255),
                 20d,
-                new Vector2(7d, 7d));
-        playerPuck1 = new MoveableCircle(
+                new Vector2(0d, 0d));
+        playerPuck1 = new PlayerPuck(
                 gameField.getSizeX() - 40,
                 gameField.getSizeY() / 2 - 20,
                 20, new Color(0, 255, 0),
-                20d,
+                40d,
                 new Vector2(0d, 0d));
-        playerPuck2 = new MoveableCircle(
+        playerPuck2 = new PlayerPuck(
                 0,
                 gameField.getSizeY() / 2 - 20,
-                20,
+                40,
                 new Color(255, 0, 0),
                 20d,
                 new Vector2(0d, 0d));
         renderableObjects = new ArrayList<>();
-//        renderableObjects.add(puck);
-//        renderableObjects.add(playerPuck1);
+        renderableObjects.add(puck);
+        renderableObjects.add(playerPuck1);
+        renderableObjects.add(playerPuck2);
 
         // For test
-        renderableObjects.add(new MoveableCircle(
-                        gameField.getSizeX() / 2 - 20 - 140,
-                        gameField.getSizeY() / 2 - 20,
-                        20,
-                        new Color(255, 255, 255),
-                        20d,
-                        new Vector2(4d, 4d)));
-        renderableObjects.add(new MoveableCircle(
-                gameField.getSizeX() / 2 - 20 + 140,
-                gameField.getSizeY() / 2 - 20,
-                30,
-                new Color(255, 255, 125),
-                60d,
-                new Vector2(-4d, 4d)));
+//        renderableObjects.add(new MoveableCircle(
+//                        gameField.getSizeX() / 2 - 20 - 140,
+//                        gameField.getSizeY() / 2 - 20,
+//                        20,
+//                        new Color(255, 255, 255),
+//                        20d,
+//                        new Vector2(4d, 4d)));
+//        renderableObjects.add(new MoveableCircle(
+//                gameField.getSizeX() / 2 - 20 + 140,
+//                gameField.getSizeY() / 2 - 20,
+//                30,
+//                new Color(255, 255, 125),
+//                60d,
+//                new Vector2(-4d, 4d)));
 
         isPaused = false;
         prefTime = System.nanoTime();
@@ -98,9 +103,11 @@ public class GameProccess {
             return;
         }
 
-        // обработка движения
         Long time = System.nanoTime();
         Long delta = time - prefTime;
+        // Обработка движения шайбы игрока
+        playerPuck1.computeSpeedAndCoord(mouseLocation, delta / PhysicContext.tick * gameSpeed);
+        // обработка движения
         for (DynamicObject o : renderableObjects) {
             o.move(delta / PhysicContext.tick * gameSpeed);
         }

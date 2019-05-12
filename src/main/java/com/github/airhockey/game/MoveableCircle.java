@@ -40,7 +40,8 @@ public class MoveableCircle extends DynamicObject implements Collisionable, Circ
      * @param c
      */
     protected void coll(MoveableCircle c) {
-        if (c.distance(this) < 0) {
+        Double d = c.distance(this);
+        if (d < 0) {
             Double phi2 = c.speed.angle(), phi1 = speed.angle(),
                 v1 = speed.mod(), v2 = c.speed.mod(),
                 m1 = mass, m2 = c.mass,
@@ -50,6 +51,8 @@ public class MoveableCircle extends DynamicObject implements Collisionable, Circ
             Double vy = (v1 * cos(phi1 - phi) * (m1 - m2) + 2 * m2 * v2 * cos(phi2 - phi)) * sin(phi) / (m1 + m2) +
                     v1 * sin(phi1 - phi) * sin(phi + PI / 2);
             newSpeed = new Vector2(vx, vy);
+
+            circle.center = circle.center.add((new Vector2(Math.abs(d) * cos(phi), Math.abs(d) * sin(phi))));
         }
     }
 
