@@ -13,10 +13,10 @@ import lombok.Setter;
 public class StaticCircleImpl implements Circle {
     protected Double radius;
     protected Color color;
-    protected Point center;
+    protected Vector2 center;
 
     public StaticCircleImpl(double x, double y, double radius, Color color) {
-        center = new Point(x, y);
+        center = new Vector2(x, y);
         this.radius = radius;
         this.color = color;
     }
@@ -33,7 +33,7 @@ public class StaticCircleImpl implements Circle {
         return color;
     }
 
-    public Point getCenter() {
+    public Vector2 getCenter() {
         return center;
     }
 }

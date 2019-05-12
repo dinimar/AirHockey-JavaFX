@@ -18,12 +18,20 @@ public class Vector2 {
         this.y = y;
     }
 
-    public void add(Vector2 v) {
-        x += v.x;
-        y += v.y;
+    public Vector2 add(Vector2 v) {
+        return new Vector2(x + v.x, y + v.y);
     }
 
     public Double distance(Vector2 v) {
         return Math.sqrt((x - v.getX()) * (x - v.getX()) + (y - v.getY()) * (y - v.getY()));
+    }
+
+    public void moveTo(Vector2 v) {
+        this.x = v.x;
+        this.y = v.y;
+    }
+
+    public Vector2 multiply(Double a) {
+        return new Vector2(x * a, y * a);
     }
 }

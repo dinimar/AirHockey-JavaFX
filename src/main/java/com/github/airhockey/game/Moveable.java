@@ -6,5 +6,9 @@
 package com.github.airhockey.game;
 
 public interface Moveable {
-    void move();
+    /**
+     * Высчитывает новые координаты объекта
+     * @param deltaT временя, прошедшее с последнего изменения
+     */
+    void move(Double deltaT);
 }

@@ -5,7 +5,6 @@
 
 package com.github.airhockey.game;
 
-import com.github.airhockey.game.events.CursorMove;
 import com.github.airhockey.game.events.GameEvent;
 import lombok.Getter;
 import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
@@ -28,6 +27,7 @@ public class GameProccess {
     protected Player player1, player2;
     protected Vector2D cursor;
     protected List<GameEvent> events;
+    protected Double gameSpeed;
     /**
      * время в наносекундах, когда последний раз вызвался метод compute.
      * Нужен для расчета новых местоположений объектов на основе ускорения.
@@ -43,7 +43,7 @@ public class GameProccess {
                 20,
                 new Color(255, 255, 255),
                 20d,
-                new Vector2(1d, 1d));
+                new Vector2(7d, 7d));
         playerPuck1 = new MoveableCircle(
                 gameField.getSizeX() - 40,
                 gameField.getSizeY() / 2 - 20,
@@ -59,9 +59,10 @@ public class GameProccess {
                 new Vector2(0d, 0d));
         renderableObjects = new ArrayList<>();
         renderableObjects.add(puck);
-        renderableObjects.add(playerPuck1);
+//        renderableObjects.add(playerPuck1);
         isPaused = false;
         prefTime = System.nanoTime();
+        gameSpeed = 1d;
     }
 
     public void start() {
@@ -80,21 +81,24 @@ public class GameProccess {
             return;
         }
 
+        // обработка движения
+        Long time = System.nanoTime();
+        Long delta = time - prefTime;
+        for (DynamicObject o : renderableObjects) {
+            o.move(delta / PhysicContext.tick * gameSpeed);
+        }
+
         // обработка столкновений
         for (Collisionable o : renderableObjects) {
             for (Collisionable o2 : renderableObjects) {
                 o.collision(o2);
             }
         }
-        for (DynamicObject o : renderableObjects) {
-            o.setF(o.getNewF());
+        for (Collisionable o : renderableObjects) {
+            o.collision(gameField);
         }
-
-        // обработка движения
-        Long time = System.nanoTime();
-        Long delta = time - prefTime;
         for (DynamicObject o : renderableObjects) {
-            o.move();
+            o.setSpeed(o.getNewSpeed());
         }
 
         prefTime = time;

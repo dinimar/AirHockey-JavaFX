@@ -14,7 +14,7 @@ public interface Circle {
 
     Double getRadius();
     Color getColor();
-    Point getCenter();
+    Vector2 getCenter();
 
     Double distance(Circle c);
 }
