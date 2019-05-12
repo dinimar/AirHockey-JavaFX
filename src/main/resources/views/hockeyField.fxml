@@ -12,5 +12,5 @@
     <Label GridPane.columnIndex="0" GridPane.rowIndex="1"
            fx:id="opponentNickname">No opponent</Label>
     <Button GridPane.columnIndex="0" GridPane.rowIndex="2"
-            onAction="#getOpponentNickname">Get opponent nickname</Button>
+            onAction="#getOpponentNickname">Start</Button>
 </GridPane>

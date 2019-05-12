@@ -8,7 +8,7 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 
 import javax.websocket.DeploymentException;
 
-public class ServerContoller {
+public class ServerController {
     private static GameServer gameServer;
 
     public static void main(String[] args) throws Exception {

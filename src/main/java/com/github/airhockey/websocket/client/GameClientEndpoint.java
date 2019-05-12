@@ -2,18 +2,12 @@ package com.github.airhockey.websocket.client;
 
 
 import com.github.airhockey.entities.Player;
-//import com.github.airhockey.websocket.exceptions.OpponentNotConnectedException;
-import com.github.airhockey.websocket.exceptions.OpponentNotConnectedException;
 import com.github.airhockey.websocket.messages.Message;
 import com.github.airhockey.websocket.messages.MessageType;
 import com.github.airhockey.websocket.utils.JSONConverter;
 import com.google.gson.internal.LinkedTreeMap;
-import com.sun.xml.internal.ws.handler.ClientMessageHandlerTube;
-import javafx.application.Platform;
 import javafx.scene.control.Alert;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import javax.websocket.*;
 import java.io.IOException;
@@ -28,7 +22,7 @@ public class GameClientEndpoint {
     private JSONConverter jsonConverter;
     @Autowired
     private ClientMessageHandler messageHandler;
-    private String lastReceivedMessage;
+    private String opponentNickname;
 
     public GameClientEndpoint() {
         try {
@@ -44,7 +38,6 @@ public class GameClientEndpoint {
             // Create new message
             Message msg = new Message();
             msg.setMsgType(MessageType.PLAYER_INFO);
-//            msg.setSession(userSession);
             msg.addProperty(player);
 
             this.sendMessage(msg);
@@ -59,23 +52,6 @@ public class GameClientEndpoint {
         }
     }
 
-    public String getOpponentInfo(Player fromPlayer) throws OpponentNotConnectedException {
-        Message msg = new Message();
-        msg.setMsgType(MessageType.OPPONENT_INFO);
-        msg.addProperty(fromPlayer);
-
-        this.sendMessage(msg);
-
-        String oppNick = null;
-
-        if (lastReceivedMessage != null) {
-            LinkedTreeMap msgProps = (LinkedTreeMap)messageHandler.parseMessage(lastReceivedMessage).getProperties().get(0);
-            oppNick = (String) msgProps.get("nickname");
-        }
-
-        return oppNick;
-    }
-
     @OnOpen
     public void onOpen(Session userSession) {
         this.userSession = userSession;
@@ -88,8 +64,16 @@ public class GameClientEndpoint {
 
     @OnMessage
     public void onMessage(String message) {
-        lastReceivedMessage = message;
-//        messageHandler.receiveMessage(message);
+        Message receivedMsg = messageHandler.parseMessage(message);
+
+        if (receivedMsg.getMsgType().equals(MessageType.OPPONENT_INFO)) {
+            LinkedTreeMap opponent = (LinkedTreeMap) receivedMsg.getProperties().get(0);
+            opponentNickname = (String) opponent.get("nickname");
+        }
+    }
+
+    public String getOpponentNickname() {
+        return opponentNickname;
     }
 
     public void sendMessage(Message message) {
