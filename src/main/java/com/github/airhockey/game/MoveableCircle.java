@@ -8,6 +8,8 @@ package com.github.airhockey.game;
 import lombok.Getter;
 import lombok.Setter;
 
+import static java.lang.Math.*;
+
 @Setter
 @Getter
 public class MoveableCircle extends DynamicObject implements Collisionable, Circle{
@@ -31,10 +33,23 @@ public class MoveableCircle extends DynamicObject implements Collisionable, Circ
         }
     }
 
+    /**
+     * Расчет отталкивания от шара
+     * Вычисляется на основе закона сохранения импульса и энергии при абсолютно упругом столкновении
+     * https://ru.wikipedia.org/wiki/Удар#Абсолютно_упругий_удар
+     * @param c
+     */
     protected void coll(MoveableCircle c) {
         if (c.distance(this) < 0) {
-            // Расчет отталкивания от обычного шара
-            System.out.println("kek");
+            Double phi2 = c.speed.angle(), phi1 = speed.angle(),
+                v1 = speed.mod(), v2 = c.speed.mod(),
+                m1 = mass, m2 = c.mass,
+                phi = circle.center.add(c.circle.center.negate()).angle();
+            Double vx = (v1 * cos(phi1 - phi) * (m1 - m2) + 2 * m2 * v2 * cos(phi2 - phi)) * cos(phi) / (m1 + m2) +
+                    v1 * sin(phi1 - phi) * cos(phi + PI / 2);
+            Double vy = (v1 * cos(phi1 - phi) * (m1 - m2) + 2 * m2 * v2 * cos(phi2 - phi)) * sin(phi) / (m1 + m2) +
+                    v1 * sin(phi1 - phi) * sin(phi + PI / 2);
+            newSpeed = new Vector2(vx, vy);
         }
     }
 

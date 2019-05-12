@@ -58,8 +58,25 @@ public class GameProccess {
                 20d,
                 new Vector2(0d, 0d));
         renderableObjects = new ArrayList<>();
-        renderableObjects.add(puck);
+//        renderableObjects.add(puck);
 //        renderableObjects.add(playerPuck1);
+
+        // For test
+        renderableObjects.add(new MoveableCircle(
+                        gameField.getSizeX() / 2 - 20 - 140,
+                        gameField.getSizeY() / 2 - 20,
+                        20,
+                        new Color(255, 255, 255),
+                        20d,
+                        new Vector2(4d, 4d)));
+        renderableObjects.add(new MoveableCircle(
+                gameField.getSizeX() / 2 - 20 + 140,
+                gameField.getSizeY() / 2 - 20,
+                30,
+                new Color(255, 255, 125),
+                60d,
+                new Vector2(-4d, 4d)));
+
         isPaused = false;
         prefTime = System.nanoTime();
         gameSpeed = 1d;

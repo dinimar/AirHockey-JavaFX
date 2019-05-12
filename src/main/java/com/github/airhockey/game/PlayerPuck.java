@@ -15,4 +15,10 @@ public class PlayerPuck extends MoveableCircle {
     public PlayerPuck(double x, double y, double radius, Color color, Double mass, Vector2 f) {
         super(x, y, radius, color, mass, f);
     }
+
+    public void computeSpeedAndCoord(Double newX, Double newY, Double deltaT) {
+        speed = (new Vector2(newX - getX(), newY - getY())).multiply(1 / deltaT);
+        setX(newX);
+        setY(newY);
+    }
 }

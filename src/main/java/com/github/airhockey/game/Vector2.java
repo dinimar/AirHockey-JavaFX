@@ -34,4 +34,16 @@ public class Vector2 {
     public Vector2 multiply(Double a) {
         return new Vector2(x * a, y * a);
     }
+
+    public Double angle() {
+        return Math.atan2(y, x);
+    }
+
+    public Vector2 negate() {
+        return new Vector2(-x, -y);
+    }
+
+    public Double mod() {
+        return Math.sqrt(x*x + y * y);
+    }
 }
