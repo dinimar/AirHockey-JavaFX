@@ -1,7 +1,8 @@
 package com.github.airhockey.controllers;
 
 import com.github.airhockey.config.RootConfig;
-import com.github.airhockey.game.GameProccess;
+import com.github.airhockey.game.GameProcess;
+import com.github.airhockey.game.events.javafx.GroupEventProcessingProvider;
 import com.github.airhockey.game.render.javafx.GroupRenderProvider;
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
@@ -56,15 +57,17 @@ public class GameController extends Application {
             return;
         }
 
-        GameProccess gameProccess = new GameProccess();
-        GroupRenderProvider provider = new GroupRenderProvider(group, gameProccess);
-//        provider.render(gameProccess.getRenderableObject());
+        GameProcess gameProcess = new GameProcess();
+        GroupRenderProvider provider = new GroupRenderProvider(group, gameProcess);
+        GroupEventProcessingProvider processingProvider = new GroupEventProcessingProvider(group, gameProcess);
+        processingProvider.startEventProcessing();
+//        provider.render(gameProcess.getRenderableObject());
         new AnimationTimer(){
 
             @Override
             public void handle(long now) {
-                gameProccess.compute();
-                provider.render(gameProccess.getRenderableObjects());
+                gameProcess.compute();
+                provider.render(gameProcess.getRenderableObjects());
             }
         }.start();
 

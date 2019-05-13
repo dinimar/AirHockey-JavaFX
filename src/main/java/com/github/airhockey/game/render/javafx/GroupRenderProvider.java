@@ -30,22 +30,17 @@ public class GroupRenderProvider implements RenderProvider {
     protected Group group;
     private RenderFuncFabric<GroupRenderProvider> funcFabric = new RenderFuncFabricImpl();
     protected Double offsetX, offsetY;
-    protected GameProccess proccess;
+    protected GameProcess proccess;
     protected Map<Object, Node> objects = new HashMap<>();
 
-    public GroupRenderProvider(Group group, GameProccess gameProccess) {
+    public GroupRenderProvider(Group group, GameProcess gameProcess) {
         this.group = group;
-        this.proccess = gameProccess;
+        this.proccess = gameProcess;
         group.setLayoutX(proccess.getGameField().getSizeX());
         group.setLayoutY(proccess.getGameField().getSizeY());
         setUp();
         offsetX = group.getChildren().get(0).getLayoutX();
         offsetY = group.getChildren().get(0).getLayoutY();
-
-        // TODO вынести работу с событиями в EventProvider
-        group.setOnMouseMoved(e -> {
-            gameProccess.setMouseLocation(new Vector2(e.getX(), e.getY()));
-        });
     }
 
     @Override

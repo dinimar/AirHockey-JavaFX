@@ -20,7 +20,7 @@ import java.util.List;
  * Все координаты объектов считаются от нижнего левого угла.
  */
 @Getter
-public class GameProccess {
+public class GameProcess {
     protected List<DynamicObject> renderableObjects;
     protected GameField gameField;
     protected MoveableCircle puck;
@@ -28,6 +28,9 @@ public class GameProccess {
     protected Boolean isPaused;
     protected Player player1, player2;
     protected Vector2D cursor;
+    /**
+     * игровые события, долджны быть обработыны в методе compute
+     */
     protected List<GameEvent> events;
     @Setter
     protected Vector2 mouseLocation;
@@ -38,7 +41,7 @@ public class GameProccess {
      */
     protected Long prefTime;
 
-    public GameProccess() {
+    public GameProcess() {
         // TODO вынести хардкод
         gameField = new GameField(new Color(100, 100, 100), 800d, 500d);
         puck = new MoveableCircle(
@@ -85,6 +88,7 @@ public class GameProccess {
         isPaused = false;
         prefTime = System.nanoTime();
         gameSpeed = 1d;
+        events = new ArrayList<>();
     }
 
     public void start() {
@@ -95,6 +99,10 @@ public class GameProccess {
         isPaused = true;
     }
 
+    public void addEvent(GameEvent event) {
+        events.add(event);
+    }
+
     /**
      * Основные игровые вычисления
      */
@@ -102,6 +110,13 @@ public class GameProccess {
         if (isPaused) {
             return;
         }
+
+        // Обработка событий
+        events.sort((x, y) -> x.getEventTime().compareTo(y.getEventTime()));
+        for (GameEvent e : events) {
+            e.process(this);
+        }
+        events.clear();
 
         Long time = System.nanoTime();
         Long delta = time - prefTime;

@@ -5,14 +5,24 @@
 
 package com.github.airhockey.game.events;
 
+import com.github.airhockey.game.GameProcess;
+import com.github.airhockey.game.Vector2;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
-import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
 
 @Setter
 @Getter
-@AllArgsConstructor
 public class CursorMove extends GameEvent {
-    protected Vector2D newCoord;
+    protected Vector2 newCoord;
+
+    public CursorMove(Long eventTime, Vector2 newCoord) {
+        super(eventTime);
+        this.newCoord = newCoord;
+    }
+
+    @Override
+    public void process(GameProcess p) {
+        p.setMouseLocation(newCoord);
+    }
 }

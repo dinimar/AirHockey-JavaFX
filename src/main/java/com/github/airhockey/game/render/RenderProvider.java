@@ -5,8 +5,6 @@
 
 package com.github.airhockey.game.render;
 
-import com.github.airhockey.game.GameProccess;
-
 import java.util.List;
 
 /**

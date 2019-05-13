@@ -5,6 +5,7 @@
 
 package com.github.airhockey.game.events;
 
+import com.github.airhockey.game.GameProcess;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -15,4 +16,9 @@ public abstract class GameEvent {
      * Время в наносекундах, когда произошло событие
      */
     protected Long eventTime;
+    public abstract void process(GameProcess p);
+
+    public GameEvent(Long eventTime) {
+        this.eventTime = eventTime;
+    }
 }
