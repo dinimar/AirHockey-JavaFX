@@ -6,6 +6,7 @@
 package com.github.airhockey.game.render.javafx;
 
 import com.github.airhockey.game.Circle;
+import com.github.airhockey.game.GameProcess;
 import com.github.airhockey.game.StaticCircleImpl;
 import com.github.airhockey.game.render.RenderFunc;
 import com.github.airhockey.game.render.RenderFuncFabric;
@@ -20,6 +21,7 @@ public class RenderFuncFabricImpl implements RenderFuncFabric<GroupRenderProvide
     public RenderFuncFabricImpl() {
         m = new HashMap<>();
         m.put(Circle.class, new CircleRenderFunc());
+        m.put(GameProcess.class, new GameProcessRenderFunc());
     }
 
     @Override

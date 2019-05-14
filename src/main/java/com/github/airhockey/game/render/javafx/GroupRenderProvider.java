@@ -17,6 +17,7 @@ import com.github.airhockey.game.render.RenderFuncFabric;
 import com.github.airhockey.game.render.RenderProvider;
 import javafx.scene.Group;
 import javafx.scene.Node;
+import javafx.scene.control.Label;
 import javafx.scene.shape.Rectangle;
 import lombok.Getter;
 
@@ -33,15 +34,21 @@ public class GroupRenderProvider implements RenderProvider {
     protected GameProcess proccess;
     protected Map<Object, Node> objects = new HashMap<>();
     protected final Double gateSizeX = 10d;
+    protected Label scoreLabel;
 
-    public GroupRenderProvider(Group group, GameProcess gameProcess) {
+    public GroupRenderProvider(Group group, GameProcess gameProcess, Label scoreLabel) {
         this.group = group;
+        this.scoreLabel = scoreLabel;
         this.proccess = gameProcess;
         group.setLayoutX(proccess.getGameField().getSizeX() + gateSizeX * 2);
         group.setLayoutY(proccess.getGameField().getSizeY());
         setUp();
         offsetX = group.getChildren().get(0).getLayoutX();
         offsetY = group.getChildren().get(0).getLayoutY();
+    }
+
+    protected void setScore(Long a, Long b) {
+        scoreLabel.setText(a.toString() + ":" + b.toString());
     }
 
     @Override

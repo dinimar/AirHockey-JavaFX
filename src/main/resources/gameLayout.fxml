@@ -12,7 +12,7 @@
       <HBox prefHeight="50.0" prefWidth="500.0" BorderPane.alignment="CENTER">
          <children>
             <Label styleClass="header" text="Air Hockey" />
-            <Label styleClass="score" text="0:0" />
+            <Label styleClass="score" id="label" text="0:0" />
          </children>
       </HBox>
    </top>

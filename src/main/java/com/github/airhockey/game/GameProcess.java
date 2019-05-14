@@ -7,7 +7,6 @@ package com.github.airhockey.game;
 
 import com.github.airhockey.game.events.GameEvent;
 import lombok.Getter;
-import lombok.Setter;
 import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
 
 import java.util.ArrayList;
@@ -21,7 +20,7 @@ import java.util.List;
  */
 @Getter
 public class GameProcess {
-    protected List<DynamicObject> renderableObjects;
+    protected List<DynamicObject> dynamicObjects;
     protected MoveableCircle puck;
     protected PlayerPuck playerPuck1, playerPuck2;
     protected Boolean isPaused;
@@ -50,20 +49,20 @@ public class GameProcess {
         player2 = new Player(2, new Color(0, 0, 255), "GREEN", 0l);
         gameField = new GameField(
                 new Color(100, 100, 100), 800d, 500d,
-                new Gate(player1, 100d),
-                new Gate(player2, 100d),
+                new Gate(player2, 200d),
+                new Gate(player1, 200d),
                 this);
         player1StartPos = new Vector2(
                 gameField.getSizeX() - 40,
                 gameField.getSizeY() / 2 - 20
         );
-            player2StartPos = new Vector2(
-                    0d,
-                    gameField.getSizeY() / 2 - 20
-            );
-            gamePuckStartPos = new Vector2(
-                    gameField.getSizeX() / 2 - 20,
-                    gameField.getSizeY() / 2 - 20);
+        player2StartPos = new Vector2(
+                0d,
+                gameField.getSizeY() / 2 - 20
+        );
+        gamePuckStartPos = new Vector2(
+                gameField.getSizeX() / 2 - 20,
+                gameField.getSizeY() / 2 - 20);
         puck = new GamePuck(
                 gamePuckStartPos,
                 20d,
@@ -79,20 +78,20 @@ public class GameProcess {
                 player2,
                 40d);
         currentPlayer = player1;
-        renderableObjects = new ArrayList<>();
-        renderableObjects.add(puck);
-        renderableObjects.add(playerPuck1);
-        renderableObjects.add(playerPuck2);
+        dynamicObjects = new ArrayList<>();
+        dynamicObjects.add(puck);
+        dynamicObjects.add(playerPuck1);
+        dynamicObjects.add(playerPuck2);
         mouseLocation = new Vector2(0d, 0d);
         // For test
-//        renderableObjects.add(new MoveableCircle(
+//        dynamicObjects.add(new MoveableCircle(
 //                        gameField.getSizeX() / 2 - 20 - 140,
 //                        gameField.getSizeY() / 2 - 20,
 //                        20,
 //                        new Color(255, 255, 255),
 //                        20d,
 //                        new Vector2(4d, 4d)));
-//        renderableObjects.add(new MoveableCircle(
+//        dynamicObjects.add(new MoveableCircle(
 //                gameField.getSizeX() / 2 - 20 + 140,
 //                gameField.getSizeY() / 2 - 20,
 //                30,
@@ -138,20 +137,20 @@ public class GameProcess {
         // Обработка движения шайбы игрока
         playerPuck1.computeSpeedAndCoord(mouseLocation, delta / PhysicContext.tick * gameSpeed);
         // обработка движения
-        for (DynamicObject o : renderableObjects) {
+        for (DynamicObject o : dynamicObjects) {
             o.move(delta / PhysicContext.tick * gameSpeed);
         }
 
         // обработка столкновений
-        for (Collisionable o : renderableObjects) {
-            for (Collisionable o2 : renderableObjects) {
+        for (Collisionable o : dynamicObjects) {
+            for (Collisionable o2 : dynamicObjects) {
                 o.collision(o2);
             }
         }
-        for (Collisionable o : renderableObjects) {
+        for (Collisionable o : dynamicObjects) {
             o.collision(gameField);
         }
-        for (DynamicObject o : renderableObjects) {
+        for (DynamicObject o : dynamicObjects) {
             o.setSpeed(o.getNewSpeed());
         }
 
@@ -187,5 +186,9 @@ public class GameProcess {
         playerPuck2.setY(player2StartPos.getY());
         puck.setX(gamePuckStartPos.getX());
         puck.setY(gamePuckStartPos.getY());
+    }
+
+    public List<Object> getRenderableObjects() {
+        return new ArrayList<Object>(dynamicObjects){{ add(this); }};
     }
 }
