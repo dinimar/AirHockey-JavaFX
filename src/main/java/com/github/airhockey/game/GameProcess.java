@@ -22,12 +22,9 @@ import java.util.List;
 @Getter
 public class GameProcess {
     protected List<DynamicObject> renderableObjects;
-    protected GameField gameField;
     protected MoveableCircle puck;
     protected PlayerPuck playerPuck1, playerPuck2;
     protected Boolean isPaused;
-    @Setter
-    @Getter
     protected Player player1, player2, currentPlayer;
     protected Vector2D cursor;
     /**
@@ -42,28 +39,45 @@ public class GameProcess {
      */
     protected Long prefTime;
 
+    protected Vector2 player1StartPos,
+            player2StartPos,
+            gamePuckStartPos;
+    protected GameField gameField;
+
     public GameProcess() {
         // TODO вынести хардкод
-        gameField = new GameField(new Color(100, 100, 100), 800d, 500d);
-        player1 = new Player(1, new Color(255, 0, 0));
-        player2 = new Player(2, new Color(0, 0, 255));
-        puck = new MoveableCircle(
-                gameField.getSizeX() / 2 - 20,
-                gameField.getSizeY() / 2 - 20,
-                20,
+        player1 = new Player(1, new Color(255, 0, 0), "RED", 0l);
+        player2 = new Player(2, new Color(0, 0, 255), "GREEN", 0l);
+        gameField = new GameField(
+                new Color(100, 100, 100), 800d, 500d,
+                new Gate(player1, 100d),
+                new Gate(player2, 100d),
+                this);
+        player1StartPos = new Vector2(
+                gameField.getSizeX() - 40,
+                gameField.getSizeY() / 2 - 20
+        );
+            player2StartPos = new Vector2(
+                    0d,
+                    gameField.getSizeY() / 2 - 20
+            );
+            gamePuckStartPos = new Vector2(
+                    gameField.getSizeX() / 2 - 20,
+                    gameField.getSizeY() / 2 - 20);
+        puck = new GamePuck(
+                gamePuckStartPos,
+                20d,
                 new Color(255, 255, 255),
                 20d,
                 new Vector2(0d, 0d));
         playerPuck1 = new PlayerPuck(
-                gameField.getSizeX() - 40,
-                gameField.getSizeY() / 2 - 20,
+                player1StartPos,
                 player1,
                 40d);
         playerPuck2 = new PlayerPuck(
-                0,
-                gameField.getSizeY() / 2 - 20,
+                player2StartPos,
                 player2,
-                20d);
+                40d);
         currentPlayer = player1;
         renderableObjects = new ArrayList<>();
         renderableObjects.add(puck);
@@ -157,5 +171,21 @@ public class GameProcess {
             playerPuck2.setY(newCoord.getX());
             playerPuck2.setX(newCoord.getX());
         }
+    }
+
+    public void goalTo(Player player) {
+        player = (player == player1 ? player2 : player1);
+        player.setScore(player.getScore() + 1);
+        System.out.println("GOAL!!");
+        refresh();
+    }
+
+    public void refresh() {
+        playerPuck1.setX(player1StartPos.getX());
+        playerPuck1.setY(player1StartPos.getY());
+        playerPuck2.setX(player2StartPos.getX());
+        playerPuck2.setY(player2StartPos.getY());
+        puck.setX(gamePuckStartPos.getX());
+        puck.setY(gamePuckStartPos.getY());
     }
 }

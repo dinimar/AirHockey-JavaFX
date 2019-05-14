@@ -16,9 +16,9 @@ public class PlayerPuck extends MoveableCircle implements Circle, Collisionable,
         return;
     }
 
-    public PlayerPuck(double x, double y, Player player, Double mass) {
+    public PlayerPuck(Vector2 pos, Player player, Double mass) {
         // TODO вынести хардкод
-        super(x, y, 30d, player.getColor(), mass, new Vector2(0d, 0d));
+        super(pos, 30d, player.getColor(), mass, new Vector2(0d, 0d));
     }
 
     public void computeSpeedAndCoord(Vector2 mouseLocation, Double deltaT) {

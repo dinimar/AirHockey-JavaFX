@@ -15,4 +15,6 @@ import lombok.Setter;
 public class Player {
     protected Integer id;
     protected Color color;
+    protected String name;
+    protected Long score;
 }

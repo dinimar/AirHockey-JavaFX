@@ -10,7 +10,7 @@ import lombok.Setter;
 
 @Setter
 @Getter
-public abstract class DynamicObject implements Collisionable, Moveable {
+public abstract class DynamicObject implements Collisionable, Moveable, GameMapObject {
     /**
      * Масса
      */
@@ -23,11 +23,6 @@ public abstract class DynamicObject implements Collisionable, Moveable {
      * Новый вектор скорости, нужен для вычисления отталкивания
      */
     protected Vector2 newSpeed;
-
-    abstract Double getX();
-    abstract Double getY();
-    abstract void setX(Double x);
-    abstract void setY(Double y);
 
     public DynamicObject(Double mass, Vector2 speed) {
         this.mass = mass;

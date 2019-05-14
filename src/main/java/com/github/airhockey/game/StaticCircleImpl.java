@@ -15,8 +15,8 @@ public class StaticCircleImpl implements Circle {
     protected Color color;
     protected Vector2 center;
 
-    public StaticCircleImpl(double x, double y, double radius, Color color) {
-        center = new Vector2(x, y);
+    public StaticCircleImpl(Vector2 pos, Double radius, Color color) {
+        center = pos;
         this.radius = radius;
         this.color = color;
     }
@@ -35,5 +35,25 @@ public class StaticCircleImpl implements Circle {
 
     public Vector2 getCenter() {
         return center;
+    }
+
+    @Override
+    public Double getX() {
+        return center.getX();
+    }
+
+    @Override
+    public Double getY() {
+        return center.getY();
+    }
+
+    @Override
+    public void setX(Double x) {
+        center.setX(x);
+    }
+
+    @Override
+    public void setY(Double y) {
+        center.setY(y);
     }
 }

@@ -15,4 +15,6 @@ import lombok.Setter;
 public class GameField {
     protected Color color;
     protected Double sizeX, sizeY;
+    protected Gate gate1, gate2;
+    protected GameProcess process;
 }

@@ -10,7 +10,7 @@
 
 package com.github.airhockey.game;
 
-public interface Circle {
+public interface Circle extends GameMapObject {
 
     Double getRadius();
     Color getColor();
