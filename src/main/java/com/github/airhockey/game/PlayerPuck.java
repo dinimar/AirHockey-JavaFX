@@ -5,15 +5,20 @@
 
 package com.github.airhockey.game;
 
+import lombok.Getter;
+
 public class PlayerPuck extends MoveableCircle implements Circle, Collisionable, Moveable {
+    @Getter
+    protected Player player;
 
     @Override
     public void move(Double deltaT) {
         return;
     }
 
-    public PlayerPuck(double x, double y, double radius, Color color, Double mass, Vector2 f) {
-        super(x, y, radius, color, mass, f);
+    public PlayerPuck(double x, double y, Player player, Double mass) {
+        // TODO вынести хардкод
+        super(x, y, 30d, player.getColor(), mass, new Vector2(0d, 0d));
     }
 
     public void computeSpeedAndCoord(Vector2 mouseLocation, Double deltaT) {

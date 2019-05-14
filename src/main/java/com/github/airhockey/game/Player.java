@@ -5,5 +5,14 @@
 
 package com.github.airhockey.game;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
+
+@Setter
+@Getter
+@AllArgsConstructor
 public class Player {
+    protected Integer id;
+    protected Color color;
 }

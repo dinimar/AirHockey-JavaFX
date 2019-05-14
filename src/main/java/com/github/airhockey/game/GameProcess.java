@@ -26,13 +26,14 @@ public class GameProcess {
     protected MoveableCircle puck;
     protected PlayerPuck playerPuck1, playerPuck2;
     protected Boolean isPaused;
-    protected Player player1, player2;
+    @Setter
+    @Getter
+    protected Player player1, player2, currentPlayer;
     protected Vector2D cursor;
     /**
      * игровые события, долджны быть обработыны в методе compute
      */
     protected List<GameEvent> events;
-    @Setter
     protected Vector2 mouseLocation;
     protected Double gameSpeed;
     /**
@@ -44,6 +45,8 @@ public class GameProcess {
     public GameProcess() {
         // TODO вынести хардкод
         gameField = new GameField(new Color(100, 100, 100), 800d, 500d);
+        player1 = new Player(1, new Color(255, 0, 0));
+        player2 = new Player(2, new Color(0, 0, 255));
         puck = new MoveableCircle(
                 gameField.getSizeX() / 2 - 20,
                 gameField.getSizeY() / 2 - 20,
@@ -54,21 +57,19 @@ public class GameProcess {
         playerPuck1 = new PlayerPuck(
                 gameField.getSizeX() - 40,
                 gameField.getSizeY() / 2 - 20,
-                20, new Color(0, 255, 0),
-                40d,
-                new Vector2(0d, 0d));
+                player1,
+                40d);
         playerPuck2 = new PlayerPuck(
                 0,
                 gameField.getSizeY() / 2 - 20,
-                40,
-                new Color(255, 0, 0),
-                20d,
-                new Vector2(0d, 0d));
+                player2,
+                20d);
+        currentPlayer = player1;
         renderableObjects = new ArrayList<>();
         renderableObjects.add(puck);
         renderableObjects.add(playerPuck1);
         renderableObjects.add(playerPuck2);
-
+        mouseLocation = new Vector2(0d, 0d);
         // For test
 //        renderableObjects.add(new MoveableCircle(
 //                        gameField.getSizeX() / 2 - 20 - 140,
@@ -141,5 +142,20 @@ public class GameProcess {
         }
 
         prefTime = time;
+    }
+
+    public void movePlayerPuck(Vector2 newCoord, Player player) {
+        if (player == currentPlayer) {
+            mouseLocation = newCoord;
+            return;
+        }
+        if (playerPuck1.getPlayer() == player) {
+            playerPuck1.setY(newCoord.getX());
+            playerPuck1.setX(newCoord.getX());
+        }
+        if (playerPuck2.getPlayer() == player) {
+            playerPuck2.setY(newCoord.getX());
+            playerPuck2.setX(newCoord.getX());
+        }
     }
 }
