@@ -45,17 +45,18 @@ public class GameServer {
 
         Message receivedMsg = jsonConverter.toMessage(message);
 
-        if (receivedMsg.getMsgType().equals(MessageType.PLAYER_INFO)) {
-            for (Player player : playerList) {
-                if (player.getSession().equals(session)) {
-                    LinkedTreeMap playerInfo = (LinkedTreeMap) receivedMsg.getProperties().get(0);
-                    player.setNickname((String) playerInfo.get("nickname"));
+        switch (receivedMsg.getMsgType()) {
+            case PLAYER_INFO:
+                for (Player player : playerList) {
+                    if (player.getSession().equals(session)) {
+                        LinkedTreeMap playerInfo = (LinkedTreeMap) receivedMsg.getProperties().get(0);
+                        player.setNickname((String) playerInfo.get("nickname"));
+                    }
                 }
-            }
 
-            if (checkPullState()) {
-                sendOpponentNickname();
-            }
+                if (checkPullState()) {
+                    sendOpponentNickname();
+                }
         }
     }
 
