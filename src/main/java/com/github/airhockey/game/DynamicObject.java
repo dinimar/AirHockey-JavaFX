@@ -5,6 +5,7 @@
 
 package com.github.airhockey.game;
 
+import com.github.airhockey.game.events.DynamicObjectMove;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -23,11 +24,13 @@ public abstract class DynamicObject implements Collisionable, Moveable, GameMapO
      * Новый вектор скорости, нужен для вычисления отталкивания
      */
     protected Vector2 newSpeed;
+    protected GameProcess gameProcess;
 
-    public DynamicObject(Double mass, Vector2 speed) {
+    public DynamicObject(Double mass, Vector2 speed, GameProcess p) {
         this.mass = mass;
         this.speed = speed;
         this.newSpeed = speed;
+        this.gameProcess = p;
     }
 
     @Override

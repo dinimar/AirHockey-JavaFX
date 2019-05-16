@@ -97,7 +97,7 @@ public class GameController extends Application {
 
                 List<GameEvent> events = gameProcess.getEvents();
                 if (events.size() != 0) {
-                    System.out.println("ТУТ НУЖНО ДЕЛАТЬ ПЕРЕДАЧУ СОБЫТИЙ ДРУГОМУ ИГРОКУ");
+                    System.out.println(events);
                 }
 
                 gameProcess.compute();

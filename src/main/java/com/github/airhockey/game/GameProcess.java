@@ -5,9 +5,11 @@
 
 package com.github.airhockey.game;
 
+import com.github.airhockey.game.events.DynamicObjectMove;
 import com.github.airhockey.game.events.GameEvent;
 import lombok.Getter;
 import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
+import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,6 +20,7 @@ import java.util.List;
  * Сама реализация игры.
  * Все координаты объектов считаются от нижнего левого угла.
  */
+@Component
 @Getter
 public class GameProcess {
     protected List<DynamicObject> dynamicObjects;
@@ -65,16 +68,19 @@ public class GameProcess {
                 gameField.getSizeY() / 2 - 20);
         puck = new GamePuck(
                 gamePuckStartPos,
+                this,
                 20d,
                 new Color(255, 255, 255),
                 20d,
                 new Vector2(0d, 0d));
         playerPuck1 = new PlayerPuck(
                 player1StartPos,
+                this,
                 player1,
                 40d);
         playerPuck2 = new PlayerPuck(
                 player2StartPos,
+                this,
                 player2,
                 40d);
         currentPlayer = player1;
@@ -154,6 +160,16 @@ public class GameProcess {
             o.setSpeed(o.getNewSpeed());
         }
 
+        for (int i = 0; i < dynamicObjects.size(); i++) {
+            DynamicObject o = dynamicObjects.get(i);
+            events.add(new DynamicObjectMove(
+                    System.nanoTime(),
+                    i,
+                    new Vector2(o.getX(), o.getY()),
+                    o.getSpeed()
+            ));
+        }
+
         prefTime = time;
     }
 
@@ -172,14 +188,19 @@ public class GameProcess {
         }
     }
 
-    public void goalTo(Player player) {
-        player = (player == player1 ? player2 : player1);
-        player.setScore(player.getScore() + 1);
+    public void goal(Player from, Player to) {
+        if (from != to) {
+            if (from == null) {
+                from = (to == player1 ? player2 : player1);
+            }
+            from.setScore(from.getScore() + 1);
+        }
         System.out.println("GOAL!!");
         refresh();
     }
 
     public void refresh() {
+        events.clear();
         playerPuck1.setX(player1StartPos.getX());
         playerPuck1.setY(player1StartPos.getY());
         playerPuck2.setX(player2StartPos.getX());

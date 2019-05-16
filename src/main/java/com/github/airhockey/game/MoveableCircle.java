@@ -15,8 +15,8 @@ import static java.lang.Math.*;
 public class MoveableCircle extends DynamicObject implements Collisionable, Circle{
     protected StaticCircleImpl circle;
 
-    public MoveableCircle(Vector2 pos, Double radius, Color color, Double mass, Vector2 speed) {
-        super(mass, speed);
+    public MoveableCircle(Vector2 pos, GameProcess p, Double radius, Color color, Double mass, Vector2 speed) {
+        super(mass, speed, p);
         circle = new StaticCircleImpl(pos, radius, color);
     }
 
