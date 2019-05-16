@@ -1,6 +1,5 @@
 package com.github.airhockey.config;
 
-import com.github.airhockey.services.ViewResolver;
 import com.github.airhockey.websocket.client.ClientMessageHandler;
 import com.github.airhockey.websocket.client.GameClientEndpoint;
 import com.github.airhockey.websocket.utils.JSONConverter;
@@ -17,11 +16,6 @@ public class ClientConfig {
     @Bean
     public ClientMessageHandler clientMessageHandler() {
         return new ClientMessageHandler();
-    }
-
-    @Bean
-    public ViewResolver viewResolver() {
-        return new ViewResolver();
     }
 
     @Bean
