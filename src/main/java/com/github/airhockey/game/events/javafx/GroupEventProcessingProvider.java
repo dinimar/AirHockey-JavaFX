@@ -26,7 +26,8 @@ public class GroupEventProcessingProvider implements EventProcessingProvider {
     @Override
     public void startEventProcessing() {
         group.setOnMouseMoved(e -> {
-            process.addEvent(new CursorMove(System.nanoTime(), new Vector2(e.getX(), e.getY())));
+            GameEvent event = new CursorMove(System.nanoTime(), new Vector2(e.getX(), e.getY()));
+            process.addEvent(event);
         });
     }
 }

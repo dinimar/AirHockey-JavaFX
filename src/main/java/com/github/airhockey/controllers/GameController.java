@@ -2,6 +2,7 @@ package com.github.airhockey.controllers;
 
 import com.github.airhockey.config.RootConfig;
 import com.github.airhockey.game.GameProcess;
+import com.github.airhockey.game.events.GameEvent;
 import com.github.airhockey.game.events.javafx.GroupEventProcessingProvider;
 import com.github.airhockey.game.render.javafx.GroupRenderProvider;
 import com.github.airhockey.websocket.client.GameClientEndpoint;
@@ -22,6 +23,7 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import java.util.List;
 
 @Component
 public class GameController extends Application {
@@ -92,6 +94,12 @@ public class GameController extends Application {
 
             @Override
             public void handle(long now) {
+
+                List<GameEvent> events = gameProcess.getEvents();
+                if (events.size() != 0) {
+                    System.out.println("ТУТ НУЖНО ДЕЛАТЬ ПЕРЕДАЧУ СОБЫТИЙ ДРУГОМУ ИГРОКУ");
+                }
+
                 gameProcess.compute();
                 provider.render(gameProcess.getRenderableObjects());
             }
