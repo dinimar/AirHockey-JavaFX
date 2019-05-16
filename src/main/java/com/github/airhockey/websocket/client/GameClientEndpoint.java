@@ -1,9 +1,9 @@
 package com.github.airhockey.websocket.client;
 
 
-import com.github.airhockey.entities.Player;
+import com.github.airhockey.websocket.exceptions.OpponentNotConnectedException;
 import com.github.airhockey.websocket.messages.Message;
-import com.github.airhockey.websocket.messages.MessageType;
+import com.github.airhockey.websocket.messages.data.Position;
 import com.github.airhockey.websocket.utils.JSONConverter;
 import com.google.gson.internal.LinkedTreeMap;
 import javafx.scene.control.Alert;
@@ -23,6 +23,7 @@ public class GameClientEndpoint {
     @Autowired
     private ClientMessageHandler messageHandler;
     private String opponentNickname;
+    private Position puckPos;
 
     public GameClientEndpoint() {
         try {
@@ -31,23 +32,15 @@ public class GameClientEndpoint {
         }
     }
 
-    public void connectToServer(String endpointURI, Player player) {
+    public void connectToServer(String endpointURI) throws OpponentNotConnectedException {
         try {
             container.connectToServer(this, new URI(endpointURI));
-
-            // Create new message
-            Message msg = new Message();
-            msg.setMsgType(MessageType.PLAYER_INFO);
-            msg.addProperty(player);
-
-            this.sendMessage(msg);
-
+            System.out.println("Client is initialized.");
         } catch (URISyntaxException ex) {
             Alert warn = new Alert(Alert.AlertType.WARNING, "Wrong server address");
             warn.showAndWait();
         } catch (DeploymentException ex) {
-            Alert warn = new Alert(Alert.AlertType.WARNING, "Cannot connect to server");
-            warn.showAndWait();
+            throw new OpponentNotConnectedException();
         } catch (IOException ex) {
         }
     }
@@ -65,18 +58,19 @@ public class GameClientEndpoint {
     @OnMessage
     public void onMessage(String message) {
         Message receivedMsg = messageHandler.parseMessage(message);
+        System.out.println("New message received:" + jsonConverter.toJson(message));
 
-        if (receivedMsg.getMsgType().equals(MessageType.OPPONENT_INFO)) {
-            LinkedTreeMap opponent = (LinkedTreeMap) receivedMsg.getProperties().get(0);
-            opponentNickname = (String) opponent.get("nickname");
+        switch (receivedMsg.getMsgType()) {
+            case PUCK_POS:
+                LinkedTreeMap position = (LinkedTreeMap) receivedMsg.getProperties().get(0);
+                double x = (double) position.get("x");
+                double y = (double) position.get("y");
+
+                puckPos = new Position((float) x, (float) y);
         }
     }
 
-    public String getOpponentNickname() {
-        return opponentNickname;
-    }
-
-    public void sendMessage(Message message) {
+    private void sendMessage(Message message) {
         String resMsg = jsonConverter.toJson(message);
         this.userSession.getAsyncRemote().sendText(resMsg);
     }
