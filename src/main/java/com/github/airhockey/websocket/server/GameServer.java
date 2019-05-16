@@ -1,8 +1,8 @@
 package com.github.airhockey.websocket.server;
 
+import com.github.airhockey.game.events.GameEvent;
 import com.github.airhockey.websocket.messages.Message;
 import com.github.airhockey.websocket.messages.MessageType;
-import com.github.airhockey.websocket.messages.data.Position;
 import com.github.airhockey.websocket.utils.JSONConverter;
 import org.glassfish.tyrus.server.Server;
 
@@ -34,7 +34,6 @@ public class GameServer {
     public void onOpen(Session session) {
         sessions.add(session);
         System.out.println("New player connected. Id: " + session.getId() + "\n" + "Game is started!");
-        sendPuckPosition(new Position(0f, 0f));
     }
 
     @OnMessage
@@ -45,10 +44,12 @@ public class GameServer {
         Message receivedMsg = jsonConverter.toMessage(message);
     }
 
-    public void sendPuckPosition(Position position){
+    public void sendGameEvents(List<GameEvent> events) {
         Message msg = new Message();
-        msg.setMsgType(MessageType.PUCK_POS);
-        msg.addProperty(position);
+        msg.setMsgType(MessageType.GAME_EVENT);
+        for (GameEvent event: events) {
+            msg.addProperty(event);
+        }
 
         sendMessage(sessions.get(0), msg);
     }

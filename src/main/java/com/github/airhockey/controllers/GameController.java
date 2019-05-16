@@ -4,6 +4,7 @@ import com.github.airhockey.config.ClientConfig;
 import com.github.airhockey.config.RootConfig;
 import com.github.airhockey.config.ServerConfig;
 import com.github.airhockey.game.GameProcess;
+import com.github.airhockey.game.events.GameEvent;
 import com.github.airhockey.game.events.javafx.GroupEventProcessingProvider;
 import com.github.airhockey.game.render.javafx.GroupRenderProvider;
 import com.github.airhockey.websocket.client.GameClientEndpoint;
@@ -27,6 +28,7 @@ import org.springframework.stereotype.Component;
 
 import javax.websocket.DeploymentException;
 import java.io.IOException;
+import java.util.List;
 
 @Component
 public class GameController extends Application {
@@ -110,11 +112,23 @@ public class GameController extends Application {
         GroupRenderProvider provider = new GroupRenderProvider(group, gameProcess, label);
         GroupEventProcessingProvider processingProvider = new GroupEventProcessingProvider(group, gameProcess);
         processingProvider.startEventProcessing();
+
+        if (CL_CONNECTION_TYPE) {
+            client.setGameProcess(gameProcess);
+        }
 //        provider.render(gameProcess.getRenderableObject());
         new AnimationTimer() {
 
             @Override
             public void handle(long now) {
+
+                List<GameEvent> events = gameProcess.getEvents();
+                if (events.size() != 0) {
+                    if (!CL_CONNECTION_TYPE) {
+                        server.sendGameEvents(events);
+                    } else { }
+                }
+
                 gameProcess.compute();
                 provider.render(gameProcess.getRenderableObjects());
             }
