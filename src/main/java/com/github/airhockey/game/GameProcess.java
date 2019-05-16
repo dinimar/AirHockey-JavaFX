@@ -189,6 +189,7 @@ public class GameProcess {
     }
 
     public List<Object> getRenderableObjects() {
-        return new ArrayList<Object>(dynamicObjects){{ add(this); }};
+        Object game = this;
+        return new ArrayList<Object>(dynamicObjects){{ add(game); }};
     }
 }
