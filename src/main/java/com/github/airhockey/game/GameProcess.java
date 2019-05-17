@@ -149,7 +149,10 @@ public class GameProcess {
                 }
             }
         }
-        if (myStart.getEventTime() < anotherStart.getEventTime()) {
+        if (myStart == null || anotherStart == null) {
+            return;
+        }
+        else if (myStart.getEventTime() < anotherStart.getEventTime()) {
             currentPlayer = player1;
         }
         else {
