@@ -126,7 +126,9 @@ public class GameController extends Application {
                 if (events.size() != 0) {
                     if (!CL_CONNECTION_TYPE) {
                         server.sendGameEvents(events);
-                    } else { }
+                    } else {
+//                        client.sendGameEvents(events);
+                    }
                 }
 
                 gameProcess.compute();

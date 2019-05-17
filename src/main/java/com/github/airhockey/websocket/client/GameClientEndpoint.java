@@ -2,10 +2,10 @@ package com.github.airhockey.websocket.client;
 
 
 import com.github.airhockey.game.GameProcess;
-import com.github.airhockey.game.events.CursorMove;
-import com.github.airhockey.game.events.SetScoreEvent;
+import com.github.airhockey.game.events.*;
 import com.github.airhockey.websocket.exceptions.OpponentNotConnectedException;
 import com.github.airhockey.websocket.messages.Message;
+import com.github.airhockey.websocket.messages.MessageType;
 import com.github.airhockey.websocket.utils.JSONConverter;
 import com.google.gson.Gson;
 import com.google.gson.internal.LinkedTreeMap;
@@ -75,14 +75,48 @@ public class GameClientEndpoint {
 
                     gameProcess.addEvent(gson.fromJson(json, CursorMove.class));
                 }
-            case SET_SCORE_EVENT:
+            case GOAL_EVENT:
                 for (Object obj : props) {
                     LinkedTreeMap map = (LinkedTreeMap) obj;
                     String json = jsonConverter.toJson(map);
 
-                    gameProcess.addEvent(gson.fromJson(json, SetScoreEvent.class));
+                    gameProcess.addEvent(gson.fromJson(json, GoalEvent.class));
+                }
+            case START_GAME_EVENT:
+                for (Object obj : props) {
+                    LinkedTreeMap map = (LinkedTreeMap) obj;
+                    String json = jsonConverter.toJson(map);
+
+                    gameProcess.addEvent(gson.fromJson(json, StartGameEvent.class));
+                }
+            case DYNAMIC_OBJECT_MOVE:
+                for (Object obj : props) {
+                    LinkedTreeMap map = (LinkedTreeMap) obj;
+                    String json = jsonConverter.toJson(map);
+
+                    gameProcess.addEvent(gson.fromJson(json, DynamicObjectMove.class));
                 }
         }
+    }
+
+    public void sendGameEvents(List<GameEvent> events) {
+        Message msg = new Message();
+
+        for (GameEvent event : events) {
+            if (event.getClass().equals(CursorMove.class)) {
+                msg.setMsgType(MessageType.CURSOR_MOVE);
+            } else if (event.getClass().equals(GoalEvent.class)) {
+                msg.setMsgType(MessageType.GOAL_EVENT);
+            } else if (event.getClass().equals(StartGameEvent.class)) {
+                msg.setMsgType(MessageType.START_GAME_EVENT);
+            } else if (event.getClass().equals(DynamicObjectMove.class)) {
+                msg.setMsgType(MessageType.DYNAMIC_OBJECT_MOVE);
+            }
+
+            msg.addProperty(event);
+        }
+
+        sendMessage(msg);
     }
 
     private void sendMessage(Message message) {

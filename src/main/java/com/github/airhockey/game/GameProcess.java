@@ -42,6 +42,7 @@ public class GameProcess {
      */
     protected Long prefTime;
     protected Long gameId;
+    protected Boolean isStarted = false;
 
     protected Vector2 player1StartPos,
             player2StartPos,
@@ -149,15 +150,18 @@ public class GameProcess {
                 }
             }
         }
-        if (myStart == null || anotherStart == null) {
-            return;
+        if (isStarted == false) {
+            if (myStart == null || anotherStart == null) {
+                return;
+            }
+            else if (myStart.getEventTime() < anotherStart.getEventTime()) {
+                currentPlayer = player1;
+            }
+            else {
+                currentPlayer = player2;
+            }
         }
-        else if (myStart.getEventTime() < anotherStart.getEventTime()) {
-            currentPlayer = player1;
-        }
-        else {
-            currentPlayer = player2;
-        }
+        isStarted = true;
         events.clear();
 
         Long time = System.nanoTime();

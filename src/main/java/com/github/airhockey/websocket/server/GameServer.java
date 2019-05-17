@@ -1,8 +1,6 @@
 package com.github.airhockey.websocket.server;
 
-import com.github.airhockey.game.events.CursorMove;
-import com.github.airhockey.game.events.GameEvent;
-import com.github.airhockey.game.events.SetScoreEvent;
+import com.github.airhockey.game.events.*;
 import com.github.airhockey.websocket.messages.Message;
 import com.github.airhockey.websocket.messages.MessageType;
 import com.github.airhockey.websocket.utils.JSONConverter;
@@ -52,8 +50,12 @@ public class GameServer {
         for (GameEvent event : events) {
             if (event.getClass().equals(CursorMove.class)) {
                 msg.setMsgType(MessageType.CURSOR_MOVE);
-            } else if (event.getClass().equals(SetScoreEvent.class)) {
-                msg.setMsgType(MessageType.SET_SCORE_EVENT);
+            } else if (event.getClass().equals(GoalEvent.class)) {
+                msg.setMsgType(MessageType.GOAL_EVENT);
+            } else if (event.getClass().equals(StartGameEvent.class)) {
+                msg.setMsgType(MessageType.START_GAME_EVENT);
+            } else if (event.getClass().equals(DynamicObjectMove.class)) {
+                msg.setMsgType(MessageType.DYNAMIC_OBJECT_MOVE);
             }
 
             msg.addProperty(event);
