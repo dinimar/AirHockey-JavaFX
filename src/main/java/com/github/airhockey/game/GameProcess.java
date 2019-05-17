@@ -7,6 +7,7 @@ package com.github.airhockey.game;
 
 import com.github.airhockey.game.events.DynamicObjectMove;
 import com.github.airhockey.game.events.GameEvent;
+import com.github.airhockey.game.events.StartGameEvent;
 import lombok.Getter;
 import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
 import org.springframework.stereotype.Component;
@@ -40,6 +41,7 @@ public class GameProcess {
      * Нужен для расчета новых местоположений объектов на основе ускорения.
      */
     protected Long prefTime;
+    protected Long gameId;
 
     protected Vector2 player1StartPos,
             player2StartPos,
@@ -83,7 +85,6 @@ public class GameProcess {
                 this,
                 player2,
                 40d);
-        currentPlayer = player1;
         dynamicObjects = new ArrayList<>();
         dynamicObjects.add(puck);
         dynamicObjects.add(playerPuck1);
@@ -109,10 +110,12 @@ public class GameProcess {
         prefTime = System.nanoTime();
         gameSpeed = 1d;
         events = new ArrayList<>();
+        gameId = System.nanoTime();
     }
 
     public void start() {
         isPaused = false;
+        events.add(new StartGameEvent(System.nanoTime(), gameId));
     }
 
     public void pause() {
@@ -133,8 +136,24 @@ public class GameProcess {
 
         // Обработка событий
         events.sort((x, y) -> x.getEventTime().compareTo(y.getEventTime()));
+        StartGameEvent myStart = null, anotherStart = null;
         for (GameEvent e : events) {
             e.process(this);
+            if (e.getClass().equals(StartGameEvent.class)) {
+                StartGameEvent startGameEvent = (StartGameEvent) e;
+                if (myStart == null && startGameEvent.getGameId().equals(gameId)) {
+                    myStart = startGameEvent;
+                }
+                if (anotherStart == null && !startGameEvent.getGameId().equals(gameId)) {
+                    anotherStart = startGameEvent;
+                }
+            }
+        }
+        if (myStart.getEventTime() < anotherStart.getEventTime()) {
+            currentPlayer = player1;
+        }
+        else {
+            currentPlayer = player2;
         }
         events.clear();
 
