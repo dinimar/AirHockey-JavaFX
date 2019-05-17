@@ -1,10 +1,9 @@
 package com.github.airhockey.websocket.server;
 
-import com.github.airhockey.entities.Player;
+import com.github.airhockey.game.events.GameEvent;
 import com.github.airhockey.websocket.messages.Message;
 import com.github.airhockey.websocket.messages.MessageType;
 import com.github.airhockey.websocket.utils.JSONConverter;
-import com.google.gson.internal.LinkedTreeMap;
 import org.glassfish.tyrus.server.Server;
 
 import javax.websocket.DeploymentException;
@@ -18,9 +17,9 @@ import java.util.Objects;
 
 @ServerEndpoint(value = "/air-hockey")
 public class GameServer {
-    private static List<Player> playerList = new ArrayList<>();
+    private static List<Session> sessions = new ArrayList<>();
     private Server server;
-    private ServerMessageHandler messageHandler = new ServerMessageHandler();
+    private JSONConverter jsonConverter = new JSONConverter();
 
     public void initServer() {
         this.server = new Server("127.0.0.1", 8080, "", null, this.getClass());
@@ -28,14 +27,13 @@ public class GameServer {
 
     public void launchServer() throws DeploymentException {
         server.start();
+        System.out.println("Server is started.");
     }
 
     @OnOpen
     public void onOpen(Session session) {
-        Player connPlayer = new Player();
-        connPlayer.setSession(session);
-        playerList.add(connPlayer);
-        System.out.println("New player connected. Id: " + session.getId());
+        sessions.add(session);
+        System.out.println("New player connected. Id: " + session.getId() + "\n" + "Game is started!");
     }
 
     @OnMessage
@@ -44,63 +42,22 @@ public class GameServer {
         JSONConverter jsonConverter = new JSONConverter();
 
         Message receivedMsg = jsonConverter.toMessage(message);
+    }
 
-        switch (receivedMsg.getMsgType()) {
-            case PLAYER_INFO:
-                for (Player player : playerList) {
-                    if (player.getSession().equals(session)) {
-                        LinkedTreeMap playerInfo = (LinkedTreeMap) receivedMsg.getProperties().get(0);
-                        player.setNickname((String) playerInfo.get("nickname"));
-                    }
-                }
-
-                if (checkPullState()) {
-                    sendOpponentNickname();
-                }
+    public void sendGameEvents(List<GameEvent> events) {
+        Message msg = new Message();
+        msg.setMsgType(MessageType.GAME_EVENT);
+        for (GameEvent event: events) {
+            msg.addProperty(event);
         }
+
+        sendMessage(sessions.get(0), msg);
     }
 
-    private boolean checkPullState() {
-        return playerList.size() == 2 && playerList.get(1).getNickname() != null;
-    }
-
-    private void sendOpponentNickname() {
-        Player player1 = null;
-        Player player2 = null;
-
-        JSONConverter jsonConverter = new JSONConverter();
-        player1 = playerList.get(0);
-        player2 = playerList.get(1);
-
-        Player opponentFor1 = new Player(player2.getNickname());
-        Player opponentFor2 = new Player(player1.getNickname());
-
-        Message msgToPlayer1 = new Message();
-        msgToPlayer1.setMsgType(MessageType.OPPONENT_INFO);
-        msgToPlayer1.addProperty(opponentFor1);
-
-        Message msgToPlayer2 = new Message();
-        msgToPlayer2.setMsgType(MessageType.OPPONENT_INFO);
-        msgToPlayer2.addProperty(opponentFor2);
-
-        String resMsg1 = jsonConverter.toJson(msgToPlayer1);
-        String resMsg2 = jsonConverter.toJson(msgToPlayer2);
-
-        sendMessage(player1.getSession(), resMsg1);
-        sendMessage(player2.getSession(), resMsg2);
-    }
-
-    private void sendMessage(Session session, String msg) {
-        session.getAsyncRemote().sendText(msg);
-        System.out.println("HOCKEY-SERVER: Message is sent to " + session.getId() + ":\n" + msg);
-    }
-
-    public List<Player> getPlayerList() {
-        return playerList;
-    }
-
-    public void setPlayerList(List<Player> playerList) {
-        GameServer.playerList = playerList;
+    private void sendMessage(Session session, Message message) {
+        String resMsg = jsonConverter.toJson(message);
+        session.getAsyncRemote().sendText(resMsg);
+        System.out.println("HOCKEY-SERVER: Message is sent to " + session.getId() + ":\n" + resMsg);
     }
 
     @Override

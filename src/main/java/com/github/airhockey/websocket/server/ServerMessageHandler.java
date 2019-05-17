@@ -1,11 +1,7 @@
 package com.github.airhockey.websocket.server;
 
-import com.github.airhockey.entities.Player;
 import com.github.airhockey.websocket.messages.Message;
-import com.github.airhockey.websocket.messages.MessageType;
 import com.github.airhockey.websocket.utils.JSONConverter;
-import com.google.gson.internal.LinkedTreeMap;
-import org.springframework.beans.factory.annotation.Autowired;
 
 
 public class ServerMessageHandler {

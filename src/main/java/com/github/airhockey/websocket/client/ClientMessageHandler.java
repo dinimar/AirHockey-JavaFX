@@ -1,8 +1,6 @@
 package com.github.airhockey.websocket.client;
 
-import com.github.airhockey.entities.Player;
 import com.github.airhockey.websocket.messages.Message;
-import com.github.airhockey.websocket.messages.MessageType;
 import com.github.airhockey.websocket.utils.JSONConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -33,7 +31,7 @@ public class ClientMessageHandler {
         return resp;
     }
 
-//    protected void receiveMessage(String message) {
+    //    protected void receiveMessage(String message) {
 //        lastReceivedMsg = jsonConverter.toMessage(message);
 //    }
     protected Message parseMessage(String message) {

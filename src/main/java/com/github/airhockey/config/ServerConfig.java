@@ -12,14 +12,4 @@ public class ServerConfig {
     public GameServer gameServer() {
         return new GameServer();
     }
-
-//    @Bean
-//    public ServerMessageHandler serverMessageHandler(){
-//        return new ServerMessageHandler();
-//    }
-//
-//    @Bean
-//    public JSONConverter jsonConverter() {
-//        return new JSONConverter();
-//    }
 }
