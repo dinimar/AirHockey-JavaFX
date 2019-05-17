@@ -3,24 +3,20 @@ package com.github.airhockey.websocket.client;
 
 import com.github.airhockey.game.GameProcess;
 import com.github.airhockey.game.events.CursorMove;
-import com.github.airhockey.game.events.GameEvent;
+import com.github.airhockey.game.events.SetScoreEvent;
 import com.github.airhockey.websocket.exceptions.OpponentNotConnectedException;
 import com.github.airhockey.websocket.messages.Message;
 import com.github.airhockey.websocket.utils.JSONConverter;
 import com.google.gson.Gson;
 import com.google.gson.internal.LinkedTreeMap;
-import com.google.gson.reflect.TypeToken;
 import javafx.scene.control.Alert;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.websocket.*;
 import java.io.IOException;
-import java.lang.reflect.Type;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 @ClientEndpoint
 public class GameClientEndpoint {
@@ -64,18 +60,27 @@ public class GameClientEndpoint {
 
     @OnMessage
     public void onMessage(String message) {
+        Gson gson = new Gson();
+
         Message receivedMsg = messageHandler.parseMessage(message);
         System.out.println("New message received:" + jsonConverter.toJson(message));
 
-        switch (receivedMsg.getMsgType()) {
-            case GAME_EVENT:
-                List<Object> props = receivedMsg.getProperties();
-                Gson gson = new Gson();
+        List<Object> props = receivedMsg.getProperties();
 
-                for (Object obj: props) {
+        switch (receivedMsg.getMsgType()) {
+            case CURSOR_MOVE:
+                for (Object obj : props) {
                     LinkedTreeMap map = (LinkedTreeMap) obj;
                     String json = jsonConverter.toJson(map);
+
                     gameProcess.addEvent(gson.fromJson(json, CursorMove.class));
+                }
+            case SET_SCORE_EVENT:
+                for (Object obj : props) {
+                    LinkedTreeMap map = (LinkedTreeMap) obj;
+                    String json = jsonConverter.toJson(map);
+
+                    gameProcess.addEvent(gson.fromJson(json, SetScoreEvent.class));
                 }
         }
     }
